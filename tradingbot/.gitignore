@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+build/
+dist/
+
+# Cached OHLCV data downloaded from Binance (can be large, regenerate anytime)
+data_cache/
+*.parquet
+
+# Generated backtest reports/charts (regenerate with the CLI or examples/)
+reports/
+examples/output/

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tradingbot"
+version = "0.1.0"
+description = "Event-driven backtesting framework for crypto trading strategies (Binance OHLCV data). Backtesting and paper-trading only -- no live order execution."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "matplotlib>=3.7",
+    "PyYAML>=6.0",
+    "tabulate>=0.9",
+    "python-dateutil>=2.8",
+]
+
+[project.optional-dependencies]
+binance = ["ccxt>=4.0"]
+dev = ["pytest>=7.4", "pytest-cov>=4.1"]
+
+[project.scripts]
+tradingbot = "tradingbot.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
