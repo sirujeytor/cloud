@@ -23,6 +23,7 @@
     {
       "matches": ["<all_urls>"],
       "all_frames": true,
+      "match_origin_as_fallback": true,
       "run_at": "document_idle",
       "js": ["skip-ads.js"]
     }
@@ -38,5 +39,5 @@
       }
     ]
   },
-  "minimum_chrome_version": "88"
+  "minimum_chrome_version": "115"
 }

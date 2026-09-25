@@ -38,25 +38,39 @@
     return text.length > 0 && text.length < 40 && SKIP_WORD.test(text) && !STILL_COUNTING.test(text);
   }
 
-  function findBySelector() {
-    for (const selector of SKIP_SELECTORS) {
-      const el = document.querySelector(selector);
-      if (looksClickable(el)) return el;
+  // Recorre el DOM incluyendo shadow roots abiertos: muchos reproductores
+  // dibujan sus controles (skip, cuenta atras) dentro de un componente
+  // web con Shadow DOM, que querySelectorAll normal no atraviesa.
+  function* deepWalk(root) {
+    const stack = [root];
+    while (stack.length) {
+      const node = stack.pop();
+      if (node.shadowRoot) stack.push(node.shadowRoot);
+      const children = node.children || [];
+      for (let i = 0; i < children.length; i++) {
+        stack.push(children[i]);
+        yield children[i];
+      }
     }
-    return null;
   }
 
-  // Barrido amplio por texto: cubre players con markup propio (divs/spans
-  // sin clase reconocible). Es mas costoso, por eso se llama solo desde
-  // el intervalo, no en cada mutacion del DOM.
-  function findByText() {
-    const candidates = document.querySelectorAll("button, a, div, span");
-    for (const el of candidates) {
-      if (el.children.length > 2) continue; // evita contenedores grandes
-      const text = (el.textContent || "").trim();
-      if (isReadySkipText(text) && looksClickable(el)) return el;
+  function findSkipTarget() {
+    let textCandidate = null;
+    for (const el of deepWalk(document.documentElement)) {
+      for (const selector of SKIP_SELECTORS) {
+        if (el.matches?.(selector) && looksClickable(el)) return el;
+      }
+      if (!textCandidate) {
+        const tag = el.tagName;
+        if (tag === "BUTTON" || tag === "A" || tag === "DIV" || tag === "SPAN") {
+          if (el.children.length <= 2) {
+            const text = (el.textContent || "").trim();
+            if (isReadySkipText(text) && looksClickable(el)) textCandidate = el;
+          }
+        }
+      }
     }
-    return null;
+    return textCandidate;
   }
 
   function click(el) {
@@ -64,20 +78,29 @@
     el.click();
   }
 
-  function fastCheck() {
-    const el = findBySelector();
+  function check() {
+    const el = findSkipTarget();
     if (el) click(el);
   }
 
-  function fullCheck() {
-    const el = findBySelector() || findByText();
-    if (el) click(el);
+  // Debounce: el barrido recorre todo el DOM (incluyendo shadow roots),
+  // asi que no conviene correrlo en cada mutacion suelta si la pagina
+  // muta seguido (ej. contadores, animaciones).
+  let scheduled = false;
+  function scheduleCheck() {
+    if (scheduled) return;
+    scheduled = true;
+    setTimeout(() => {
+      scheduled = false;
+      check();
+    }, 250);
   }
 
-  const observer = new MutationObserver(fastCheck);
+  const observer = new MutationObserver(scheduleCheck);
   observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
 
-  // El barrido por texto corre cada segundo: alcanza para no perderse la
-  // ventana en la que el boton pasa de "cuenta atras" a "clickeable".
-  setInterval(fullCheck, 1000);
+  // Fallback por si el cambio no dispara una mutacion visible para el
+  // observer (ej. un shadow root cerrado actualizando su propio interior,
+  // o un cambio de estilo que no toca atributos del elemento).
+  setInterval(check, 1000);
 })();
