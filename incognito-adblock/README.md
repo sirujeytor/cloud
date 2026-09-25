@@ -44,7 +44,12 @@ necesario para uso personal.
 
 ## Actualizar la lista de dominios bloqueados
 
-1. Editar `lists/ads.txt` y/o `lists/trackers.txt` (un dominio por linea).
+1. Editar los archivos en `lists/` (un dominio por linea):
+   - `ads.txt`: redes de publicidad generalistas.
+   - `trackers.txt`: rastreadores de analitica/perfilado.
+   - `adult-ads.txt`: redes especificas de sitios para adultos (Google/
+     DoubleClick no opera ahi, asi que ese rubro usa sus propias redes,
+     que no aparecen en ninguna lista "generalista").
 2. Regenerar `rules.json`:
 
    ```bash
@@ -73,3 +78,10 @@ python3 scripts/gen_icons.py
   dominio bloqueado es necesario para su funcionamiento (ej. un CDN
   compartido). Se soluciona sacando esa linea de `lists/` y regenerando
   `rules.json`.
+- En sitios para adultos, muchos "anuncios" en realidad son popups o
+  redirecciones que dispara JavaScript propio del sitio al hacer click
+  en cualquier parte de la pagina (clickjacking), no un recurso que se
+  carga solo. Bloquear el dominio evita que el script de la red de
+  publicidad se cargue, pero no puede evitar el 100% de esos clicks
+  redirigidos si el sitio los maneja con su propio codigo. El bloqueador
+  de popups nativo de Chrome (activado por defecto) ayuda con el resto.

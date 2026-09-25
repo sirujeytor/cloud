@@ -1,0 +1,43 @@
+# Redes de publicidad/pop-redirect especificas de sitios para adultos.
+# Google/DoubleClick no opera ahi por politica, asi que este rubro usa
+# redes propias que no aparecen en listas de anuncios "generalistas".
+exoclick.com
+exosrv.com
+exdynsrv.com
+juicyads.com
+juicyads.net
+adtng.com
+trafficjunky.com
+trafficjunky.net
+tj-media.com
+popads.net
+popcash.net
+adcash.com
+hilltopads.net
+clickadu.com
+eroadvertising.com
+plugrush.com
+adxpansion.com
+adnium.com
+trafficstars.com
+trafficstars.net
+adskeeper.com
+doublepimp.com
+ad-maven.com
+adspyglass.com
+adtelligent.com
+yengo.com
+reporo.io
+adsco.re
+clickaine.com
+coinzilla.com
+a-ads.com
+adyeah.com
+sexad.net
+adultadworld.com
+premiumsex.pl
+trafficfactory.biz
+onclickalgo.com
+onclckmn.com
+mediatraff.click
+adnetworkperformance.com
