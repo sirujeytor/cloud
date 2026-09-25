@@ -2,5 +2,5 @@ node_modules/
 dist/
 .env
 auth/
-data/*.json
+data/**/*.json
 *.log

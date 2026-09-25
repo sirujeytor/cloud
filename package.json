@@ -8,7 +8,9 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "login": "tsx src/loginSetup.ts"
+    "login": "tsx src/loginSetup.ts",
+    "scan": "tsx src/scanner/run.ts",
+    "scan:watch": "tsx src/scanner/run.ts --watch"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

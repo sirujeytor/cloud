@@ -79,3 +79,38 @@ Todo esta en `config/templates.json`. Cada regla tiene `keywords` (palabras
 que disparan la respuesta) y `reply` (el texto que se manda). No hace falta
 reiniciar el bot para probar cambios chicos, pero si conviene reiniciarlo
 para asegurarse de que tomo el archivo nuevo.
+
+## Scanner de spreads P2P (`src/scanner`)
+
+Un modulo aparte, mas simple y de menor riesgo que el bot de arriba: no
+automatiza el navegador ni necesita login, solo hace pedidos HTTP de
+lectura al endpoint publico que usa la pagina web de Binance P2P para
+listar anuncios. Recorre muchas monedas fiat y calcula, para cada una, la
+diferencia entre el mejor precio de compra y el mejor precio de venta.
+
+```bash
+npm run scan          # corre una vez y termina
+npm run scan:watch    # corre y despues se repite cada SCAN_INTERVAL_MS (1 hora por defecto)
+```
+
+Cada corrida guarda el reporte completo en
+`data/scanner-reports/latest.json` y, si configuraste Telegram, manda un
+resumen con las `SCAN_TOP_N` monedas de mayor spread.
+
+**Que mide en realidad:** el spread que calcula es compra-vs-venta *dentro
+de la misma moneda* (por ejemplo, cuanto mas caro esta comprar USDT con
+pesos argentinos contra venderlo por pesos argentinos). Eso muestra que
+mercados estan mas ilíquidos o volatiles, pero **no es todavia arbitraje
+confirmado entre paises** (comprar barato en un fiat y vender caro en
+otro): para eso falta comparar contra un tipo de cambio real entre las dos
+monedas, que se puede sumar despues como fase 2 si les sirve.
+
+**Limitaciones a tener en cuenta:**
+- El endpoint no es una API oficial ni documentada por Binance: puede
+  cambiar de forma sin aviso o empezar a bloquear pedidos automatizados.
+- La lista de monedas en `src/scanner/currencies.ts` es una seleccion
+  curada, no la lista completa y oficial (Binance no publica una) — se
+  edita libremente agregando o sacando codigos.
+- Toma el precio del primer anuncio de cada lado sin filtrar por límites
+  de monto ni reputacion del vendedor/comprador; para un uso serio
+  conviene agregar esos filtros.
