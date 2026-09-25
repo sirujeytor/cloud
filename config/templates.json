@@ -1,0 +1,22 @@
+{
+  "_comment": "Edita estas respuestas sin tocar codigo. 'keywords' son palabras que, si aparecen en el mensaje del cliente (sin importar mayusculas/acentos), disparan la 'reply'. Se evalua en orden, se usa la primera que matchee.",
+  "rules": [
+    {
+      "keywords": ["banco", "cuenta", "cbu", "alias"],
+      "reply": "Ya te comparto los datos para la transferencia por este mismo chat. Cualquier duda me avisas."
+    },
+    {
+      "keywords": ["cuanto tarda", "tiempo", "demora"],
+      "reply": "Estamos revisando pagos activamente, en cuanto se confirme el tuyo se libera la operacion. Gracias por la paciencia."
+    },
+    {
+      "keywords": ["ya pague", "ya transferi", "listo el pago", "hecho el pago"],
+      "reply": "Perfecto, recibimos tu aviso. Estamos verificando el ingreso del pago y en breve liberamos la operacion."
+    },
+    {
+      "keywords": ["hola", "buenas", "buen dia", "buenas tardes", "buenas noches"],
+      "reply": "Hola! Gracias por operar con nosotros. Contame en que te puedo ayudar."
+    }
+  ],
+  "fallback": "Recibimos tu mensaje, en breve te responde alguien del equipo."
+}
