@@ -80,13 +80,23 @@ que disparan la respuesta) y `reply` (el texto que se manda). No hace falta
 reiniciar el bot para probar cambios chicos, pero si conviene reiniciarlo
 para asegurarse de que tomo el archivo nuevo.
 
-## Scanner de spreads P2P (`src/scanner`)
+## Scanner de arbitraje P2P (`src/scanner`)
 
 Un modulo aparte, mas simple y de menor riesgo que el bot de arriba: no
 automatiza el navegador ni necesita login, solo hace pedidos HTTP de
-lectura al endpoint publico que usa la pagina web de Binance P2P para
-listar anuncios. Recorre muchas monedas fiat y calcula, para cada una, la
-diferencia entre el mejor precio de compra y el mejor precio de venta.
+lectura a endpoints publicos (Binance P2P, el spot publico de Binance para
+BTC/ETH, y un par de fuentes de tipo de cambio real). Recorre muchas
+monedas fiat y varios activos, y calcula por cada combinacion:
+
+- **Spread interno**: diferencia entre el mejor precio de compra y de venta
+  dentro de la misma moneda.
+- **Premium real**: cuanto por encima o por debajo del valor real de
+  mercado (tipo de cambio real, no el "oficial" cuando ese no sirve — ver
+  abajo) cotiza el activo en esa moneda. Es la base para detectar
+  arbitraje genuino entre paises, no solo spread interno.
+- **Mejor oportunidad teorica**: para cada activo, en que pais convendria
+  comprarlo (mas barato en USD reales) y en cual convendria venderlo (mas
+  caro en USD reales), con el porcentaje teorico de ganancia.
 
 ```bash
 npm run scan          # corre una vez y termina
@@ -94,23 +104,51 @@ npm run scan:watch    # corre y despues se repite cada SCAN_INTERVAL_MS (1 hora 
 ```
 
 Cada corrida guarda el reporte completo en
-`data/scanner-reports/latest.json` y, si configuraste Telegram, manda un
-resumen con las `SCAN_TOP_N` monedas de mayor spread.
+`data/scanner-reports/latest.json`, agrega una linea por moneda/activo a
+`data/scanner-reports/history.jsonl` (para poder mostrar tendencia de 24hs)
+y, si configuraste Telegram, manda un resumen con los `SCAN_TOP_N` mejores
+mercados para vender y para comprar, marcando con 🔔 los que superan
+`SCAN_ALERT_THRESHOLD_PCT`.
 
-**Que mide en realidad:** el spread que calcula es compra-vs-venta *dentro
-de la misma moneda* (por ejemplo, cuanto mas caro esta comprar USDT con
-pesos argentinos contra venderlo por pesos argentinos). Eso muestra que
-mercados estan mas ilíquidos o volatiles, pero **no es todavia arbitraje
-confirmado entre paises** (comprar barato en un fiat y vender caro en
-otro): para eso falta comparar contra un tipo de cambio real entre las dos
-monedas, que se puede sumar despues como fase 2 si les sirve.
+### Como calcula el "valor real"
 
-**Limitaciones a tener en cuenta:**
-- El endpoint no es una API oficial ni documentada por Binance: puede
-  cambiar de forma sin aviso o empezar a bloquear pedidos automatizados.
+- Para la mayoria de las monedas usa una tabla de tipos de cambio oficial
+  (open.er-api.com, gratis, sin API key).
+- Para monedas con control de cambios donde la tasa oficial no sirve de
+  referencia (empieza con Argentina, via la cotizacion "blue" de
+  bluelytics.com.ar) hay un mapa de overrides en `src/scanner/fxRates.ts`
+  donde se pueden enchufar mas fuentes especificas por pais (Venezuela,
+  etc.) a medida que las necesiten.
+- Para BTC/ETH, el "valor real" de referencia es su precio spot publico en
+  Binance (`api.binance.com`, distinto del endpoint de P2P). Para
+  USDT/USDC se asume que valen 1 USD.
+
+### Filtros de calidad de precio
+
+Antes de tomar el "mejor precio" de cada lado, se descartan anuncios de
+comerciantes con `monthFinishRate` menor a `SCAN_MIN_COMPLETION_RATE`, y se
+prioriza a los que puedan cubrir una operacion de `SCAN_TRADE_AMOUNT_USD`
+(convertido a la moneda local con el tipo de cambio real). Si el filtro
+deja la lista vacia para esa moneda, se usa igual el mejor precio
+disponible sin filtrar, en vez de no reportar nada.
+
+**Limitaciones y cosas a verificar antes de confiar en los numeros:**
+- Ninguno de estos endpoints (Binance P2P, Binance spot, las fuentes de FX)
+  es una API oficial garantizada para este uso: pueden cambiar de forma o
+  empezar a bloquear pedidos automatizados sin aviso. El codigo reintenta
+  con backoff ante fallos, pero no hay garantia de disponibilidad.
 - La lista de monedas en `src/scanner/currencies.ts` es una seleccion
-  curada, no la lista completa y oficial (Binance no publica una) — se
-  edita libremente agregando o sacando codigos.
-- Toma el precio del primer anuncio de cada lado sin filtrar por límites
-  de monto ni reputacion del vendedor/comprador; para un uso serio
-  conviene agregar esos filtros.
+  curada a mano (~70 monedas), no una lista dinamica obtenida de Binance:
+  intente evitar adivinar el formato de un endpoint no documentado para no
+  meter una funcion que parezca confiable sin estar realmente verificada.
+  Se edita libremente agregando o sacando codigos.
+- El "arbitraje teorico" que calcula **no descuenta comisiones de Binance,
+  el spread de conversion, tiempos de transferencia, ni restricciones
+  legales o de control de cambios** que puedan impedir mover el dinero
+  entre paises en la practica. Es una senal para investigar, no una
+  ganancia garantizada.
+- No se pudo probar contra las APIs reales en el entorno donde se
+  desarrollo esto por una restriccion de red del sandbox — se probo toda
+  la logica de calculo y formateo con datos simulados, pero conviene
+  correr `npm run scan` una vez y revisar la salida por consola antes de
+  dejarlo en modo `--watch` sin supervision.

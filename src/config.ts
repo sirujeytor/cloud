@@ -18,10 +18,20 @@ export const config = {
   templatesPath: "config/templates.json",
 
   // Scanner de arbitraje P2P (solo Binance, publico, no requiere login)
-  scanAsset: process.env.SCAN_ASSET ?? "USDT",
+  scanAssets: (process.env.SCAN_ASSETS ?? "USDT,USDC,BTC,ETH").split(",").map((a) => a.trim()).filter(Boolean),
   scanIntervalMs: Number(process.env.SCAN_INTERVAL_MS ?? 3_600_000),
   scanTopN: Number(process.env.SCAN_TOP_N ?? 8),
   scanReportPath: "data/scanner-reports/latest.json",
+  // Monto de operacion de referencia (en USD) para filtrar anuncios que puedan cubrirlo
+  scanTradeAmountUsd: Number(process.env.SCAN_TRADE_AMOUNT_USD ?? 100),
+  // Tasa minima de finalizacion mensual del comerciante (0-1) para confiar en su precio
+  scanMinCompletionRate: Number(process.env.SCAN_MIN_COMPLETION_RATE ?? 0.85),
+  // A partir de que |premium/spread| (en %) se marca una fila como alerta en el aviso
+  scanAlertThresholdPct: Number(process.env.SCAN_ALERT_THRESHOLD_PCT ?? 5),
+  // Cuantos dias de historial conservar para calcular tendencias
+  scanHistoryRetentionDays: Number(process.env.SCAN_HISTORY_RETENTION_DAYS ?? 14),
+  // Pausa entre pedidos HTTP sucesivos, para no golpear los endpoints publicos de una
+  scanRequestDelayMs: Number(process.env.SCAN_REQUEST_DELAY_MS ?? 250),
 };
 
 export function telegramConfigured(): boolean {

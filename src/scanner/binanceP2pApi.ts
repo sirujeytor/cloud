@@ -5,6 +5,8 @@
  * momento. Es de solo lectura (no requiere login), asi que el riesgo es
  * mucho menor que el del bot de chat, pero no es garantia de nada.
  */
+import { fetchJsonWithRetry } from "./httpJson.js";
+
 const ENDPOINT = "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search";
 
 export type TradeType = "BUY" | "SELL";
@@ -14,7 +16,7 @@ export interface P2pAd {
   minAmount: number;
   maxAmount: number;
   advertiserName: string;
-  completionRate: number | null;
+  completionRate: number | null; // 0-1, null si Binance no lo informo
 }
 
 interface RawAdvResponse {
@@ -42,9 +44,10 @@ export async function fetchTopAds(
   asset: string,
   fiat: string,
   tradeType: TradeType,
-  rows = 5,
+  rows = 10,
+  payTypes: string[] = [],
 ): Promise<P2pAd[]> {
-  const response = await fetch(ENDPOINT, {
+  const json = await fetchJsonWithRetry<RawAdvResponse>(ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -53,16 +56,11 @@ export async function fetchTopAds(
       tradeType,
       page: 1,
       rows,
-      payTypes: [],
+      payTypes,
       publisherType: null,
     }),
   });
 
-  if (!response.ok) {
-    throw new Error(`Binance P2P respondio ${response.status} para ${fiat}/${tradeType}`);
-  }
-
-  const json = (await response.json()) as RawAdvResponse;
   if (json.code !== "000000" || !Array.isArray(json.data)) {
     return [];
   }

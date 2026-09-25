@@ -2,25 +2,36 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { config } from "../config.js";
 import { notifyHuman } from "../notify/telegram.js";
-import { scanAllCurrencies } from "./analyzer.js";
+import { scanAll } from "./analyzer.js";
 import { fiatCurrencies } from "./currencies.js";
+import { appendHistory, getPremiumDeltas, pruneHistory } from "./history.js";
+import { findAllOpportunities } from "./opportunity.js";
 import { formatConsoleReport, formatTelegramReport } from "./report.js";
 
 async function runOnce(): Promise<void> {
-  console.log(`Escaneando ${fiatCurrencies.length} monedas contra Binance P2P...`);
-  const { results, errors } = await scanAllCurrencies(config.scanAsset, fiatCurrencies);
+  const assets = config.scanAssets;
+  console.log(`Escaneando ${fiatCurrencies.length} monedas x ${assets.length} activos (${assets.join(", ")}) en Binance P2P...`);
 
-  console.log(formatConsoleReport(config.scanAsset, results, errors));
+  const { results, errors } = await scanAll(assets, fiatCurrencies);
+  const opportunities = findAllOpportunities(assets, results);
+
+  console.log(formatConsoleReport(results, errors, opportunities));
 
   await mkdir(dirname(config.scanReportPath), { recursive: true });
   await writeFile(
     config.scanReportPath,
-    JSON.stringify({ timestamp: new Date().toISOString(), asset: config.scanAsset, results, errors }, null, 2),
+    JSON.stringify({ timestamp: new Date().toISOString(), assets, results, errors, opportunities }, null, 2),
     "utf8",
   );
 
+  await appendHistory(results);
+  await pruneHistory(config.scanHistoryRetentionDays);
+
   if (results.length > 0) {
-    await notifyHuman(formatTelegramReport(config.scanAsset, results, config.scanTopN));
+    const trends = await getPremiumDeltas(results);
+    await notifyHuman(
+      formatTelegramReport(results, opportunities, config.scanTopN, config.scanAlertThresholdPct, trends),
+    );
   }
 }
 
