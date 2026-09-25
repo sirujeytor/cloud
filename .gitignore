@@ -4,3 +4,4 @@ dist/
 auth/
 data/*.json
 *.log
+incognito-adblock/_metadata/
