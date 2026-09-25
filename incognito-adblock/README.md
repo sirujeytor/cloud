@@ -31,13 +31,21 @@ necesario para uso personal.
 
 ## Como funciona
 
-- `rules.json` contiene ~150 reglas de bloqueo generadas a partir de las
-  listas en `lists/` (redes de anuncios conocidas y rastreadores de
-  analitica/perfilado).
+- `rules.json` contiene reglas de bloqueo por dominio, generadas a partir
+  de las listas en `lists/` (redes de anuncios, rastreadores de
+  analitica/perfilado, redes especificas de sitios para adultos y
+  servidores de anuncios de video VAST/VPAID).
 - El navegador aplica esas reglas de forma nativa (no hay que analizar
   cada request en JavaScript), asi que es rapido y liviano.
+- `skip-ads.js` corre en cada pagina (y en sus iframes) y clickea
+  automaticamente el boton "Saltar anuncio" de reproductores de video
+  en cuanto se habilita (IMA SDK, JW Player, Video.js y variantes). No
+  puede evitar los segundos obligatorios antes de que el boton
+  aparezca -- eso lo define el servidor de anuncios, no hay forma de
+  saltarlo sin romper el reproductor -- pero evita tener que clickearlo
+  a mano.
 - El popup permite:
-  - Activar/desactivar la proteccion con un switch.
+  - Activar/desactivar el bloqueo por dominio con un switch.
   - Ver cuantos anuncios/rastreadores se bloquearon.
   - Reiniciar el contador.
   - Ir directo a la pantalla para habilitar el modo incognito.
@@ -50,6 +58,8 @@ necesario para uso personal.
    - `adult-ads.txt`: redes especificas de sitios para adultos (Google/
      DoubleClick no opera ahi, asi que ese rubro usa sus propias redes,
      que no aparecen en ninguna lista "generalista").
+   - `video-ads.txt`: servidores de anuncios de video (VAST/VPAID) que
+     usan muchos reproductores.
 2. Regenerar `rules.json`:
 
    ```bash

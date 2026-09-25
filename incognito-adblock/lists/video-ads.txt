@@ -1,0 +1,9 @@
+# Servidores de anuncios de video (VAST/VPAID) usados por muchos
+# reproductores, incluidos los de sitios de streaming/tube.
+imasdk.googleapis.com
+stickyadstv.com
+fwmrm.net
+springserve.com
+vidoomy.com
+jwpltx.com
+tremorhub.com
