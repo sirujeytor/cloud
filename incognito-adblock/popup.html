@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Incognito AdBlock</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="icons/icon48.png" alt="" width="28" height="28" />
+      <h1>Incognito AdBlock</h1>
+    </header>
+
+    <section class="status-card">
+      <div class="status-row">
+        <span id="status-label">Comprobando...</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="count">
+        <strong id="count">0</strong> anuncios/rastreadores bloqueados
+      </p>
+      <button id="reset" class="link-btn">Reiniciar contador</button>
+    </section>
+
+    <section id="incognito-warning" class="warning-card hidden">
+      <p>
+        Para que funcione tambien en <strong>modo incognito</strong>, Chrome
+        exige activarlo a mano una sola vez (por seguridad, ninguna
+        extension puede hacerlo por si misma):
+      </p>
+      <ol>
+        <li>Abrir la pagina de detalles de la extension.</li>
+        <li>Activar el interruptor <strong>"Permitir en modo incognito"</strong>.</li>
+      </ol>
+      <button id="open-settings">Abrir configuracion de la extension</button>
+    </section>
+
+    <footer>
+      <span>Gratis, sin cuentas ni version premium.</span>
+    </footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

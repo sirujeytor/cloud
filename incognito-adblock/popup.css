@@ -1,0 +1,142 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 280px;
+  margin: 0;
+  padding: 14px;
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #1a1f36;
+  color: #f4f5f7;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-size: 15px;
+  margin: 0;
+}
+
+.status-card {
+  background: #242a49;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#status-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.count {
+  margin: 10px 0 4px;
+  font-size: 13px;
+  color: #c7cbe0;
+}
+
+.count strong {
+  color: #2dd4bf;
+  font-size: 16px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #8b93c1;
+  font-size: 11px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.warning-card {
+  margin-top: 10px;
+  background: #3a2a1a;
+  border: 1px solid #b5772a;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.warning-card.hidden {
+  display: none;
+}
+
+.warning-card ol {
+  margin: 6px 0;
+  padding-left: 18px;
+}
+
+#open-settings {
+  width: 100%;
+  margin-top: 6px;
+  padding: 6px;
+  border: none;
+  border-radius: 6px;
+  background: #b5772a;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+footer {
+  margin-top: 10px;
+  font-size: 10px;
+  color: #6b7199;
+  text-align: center;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #55597a;
+  border-radius: 22px;
+  transition: 0.2s;
+}
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+input:checked + .slider {
+  background-color: #2dd4bf;
+}
+
+input:checked + .slider::before {
+  transform: translateX(18px);
+}
