@@ -14,6 +14,10 @@
     '[id*="skip-button" i]',
     "button.skip-button",
     ".jw-skip",
+    "#skipAdButton",
+    ".skipAd a",
+    ".skipAd button",
+    ".skipAdContainer button",
   ];
 
   // Palabras que indican un control de "saltar" real, ya habilitado.
@@ -23,8 +27,23 @@
   // que el texto cambie (o el numero llegue a 0 y desaparezca).
   const STILL_COUNTING = /\d+\s*(segundos?|seconds?|\bs\b)/i;
 
+  // Patron muy comun: el texto del boton NO cambia ("Saltar anuncio"
+  // se queda fijo) y lo que cambia es que se le sacan el atributo
+  // "disabled" o una clase "disabled"/"is-disabled" cuando termina la
+  // cuenta atras (que vive en un elemento hermano separado, tipo
+  // <span id="skipAdCountdown">5</span>). Si no se chequea esto, el
+  // boton se clickea (sin efecto) apenas aparece, se marca como
+  // "resuelto" y nunca se reintenta cuando de verdad se habilita.
+  function isDisabled(el) {
+    if (el.disabled) return true;
+    if (el.getAttribute?.("aria-disabled") === "true") return true;
+    const cls = el.className;
+    if (typeof cls === "string" && /\b(is-)?disabled\b/i.test(cls)) return true;
+    return false;
+  }
+
   function looksClickable(el) {
-    if (!el || el.dataset.__adblockSkipped) return false;
+    if (!el || el.dataset.__adblockSkipped || isDisabled(el)) return false;
     const rect = el.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return false;
     const style = window.getComputedStyle(el);
