@@ -739,18 +739,19 @@ function updateEnemy(e){
 
 /* ================= BOSSES ================= */
 var BOSS_DEFS = {
-  sheriff: { name:'EL SHERIFF CORRUPTO', hp:42, w:34, h:48, color:'#7a2e2e' },
-  cannon:  { name:'EL ARTILLERO DEL CAÑÓN', hp:58, w:60, h:44, color:'#4a3a2a' },
-  golem:   { name:'EL GÓLEM DE LA MINA', hp:75, w:50, h:58, color:'#3f4a52' },
-  ghostrider: { name:'EL JINETE FANTASMA', hp:62, w:46, h:44, color:'#4a2f5c' },
-  locomotive: { name:'LA LOCOMOTORA MALDITA', hp:90, w:70, h:58, color:'#2c2c2c' },
-  redskull: { name:'EL CRÁNEO ROJO', hp:130, w:32, h:48, color:'#8a2b1f' },
+  sheriff: { name:'EL SHERIFF CORRUPTO', hp:42, w:34, h:48, color:'#7a2e2e', accent:'#2b1b12', glow:'#e8c37a' },
+  cannon:  { name:'EL ARTILLERO DEL CAÑÓN', hp:58, w:60, h:44, color:'#4a3a2a', accent:'#1e1a12', glow:'#ff7a30' },
+  golem:   { name:'EL GÓLEM DE LA MINA', hp:75, w:50, h:58, color:'#3f4a52', accent:'#232a2e', glow:'#c1601f' },
+  ghostrider: { name:'EL JINETE FANTASMA', hp:62, w:46, h:44, color:'#4a2f5c', accent:'#2a1a33', glow:'#7fe0d8' },
+  locomotive: { name:'LA LOCOMOTORA MALDITA', hp:90, w:70, h:58, color:'#2c2c2c', accent:'#1a1a1a', glow:'#ffcf6b' },
+  redskull: { name:'EL CRÁNEO ROJO', hp:130, w:32, h:48, color:'#8a2b1f', accent:'#241408', glow:'#f4e4c1' },
 };
 function makeBoss(type, x){
   var def = BOSS_DEFS[type];
   var b = makeEnemy('boss_'+type, x, GROUND_Y);
   b.boss = true; b.bossType = type; b.hp = def.hp; b.maxHp = def.hp;
   b.w = def.w; b.h = def.h; b.color = def.color; b.name = def.name;
+  b.accentColor = def.accent; b.glowColor = def.glow;
   b.phase = 1; b.timer = 60; b.state='enter'; b.scoreValue = 3000;
   b.originX = x; b.moveDir = -1;
   return b;
@@ -1243,35 +1244,121 @@ function gameLoop(){
 }
 
 /* ================= RENDER ================= */
+var AMBIENT_DUST = (function(){
+  var arr = [];
+  for (var i=0;i<36;i++){
+    arr.push({ baseX: rand(0,W), y: rand(50,GROUND_Y-16), size: rand(1,2.4), speed: rand(0.12,0.45), phase: rand(0,Math.PI*2), alpha: rand(0.08,0.22) });
+  }
+  return arr;
+})();
+var EMBERS = (function(){
+  var arr = [];
+  for (var i=0;i<16;i++){
+    arr.push({ baseX: rand(0,W), speed: rand(0.3,0.8), phase: rand(0,Math.PI*2), rise: rand(0.4,0.9), size: rand(1.5,3) });
+  }
+  return arr;
+})();
+
 function drawBackground(){
+  var accent = currentLevel.accent;
+  var isCave = accent==='mine';
   var g = ctx.createLinearGradient(0,0,0,H);
   g.addColorStop(0, currentLevel.sky[0]);
   g.addColorStop(1, currentLevel.sky[1]);
   ctx.fillStyle = g;
   ctx.fillRect(0,0,W,H);
 
-  var sunX = 760 - camX*0.15;
-  ctx.fillStyle = 'rgba(255,220,160,0.55)';
-  ctx.beginPath(); ctx.arc(sunX % (W+400) - 200, 150, 60, 0, Math.PI*2); ctx.fill();
+  if (!isCave){
+    var sunX = 760 - camX*0.15;
+    ctx.fillStyle = 'rgba(255,220,160,0.55)';
+    ctx.beginPath(); ctx.arc(sunX % (W+400) - 200, 150, 60, 0, Math.PI*2); ctx.fill();
+  } else {
+    ctx.fillStyle = 'rgba(255,150,60,0.14)';
+    var glowOff = camX*0.2;
+    for (var gi=-1; gi<6; gi++){
+      var gx = gi*340 - (glowOff % 340);
+      ctx.beginPath(); ctx.arc(gx, 240, 100, 0, Math.PI*2); ctx.fill();
+    }
+  }
+  if (accent==='ranch'){
+    ctx.fillStyle = 'rgba(255,110,35,0.22)';
+    ctx.beginPath(); ctx.arc(680 - camX*0.25, 370, 140, 0, Math.PI*2); ctx.fill();
+  }
 
-  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.fillStyle = isCave ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.35)';
   var farOff = camX*0.35;
   for (var i=-1;i<8;i++){
     var bx = i*260 - (farOff % 260);
-    drawSilhouetteHill(bx, 320);
+    drawFarLayer(bx, 320, accent);
   }
 
-  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillStyle = isCave ? 'rgba(0,0,0,0.72)' : 'rgba(0,0,0,0.55)';
   var midOff = camX*0.6;
   for (i=-1;i<10;i++){
     var mx = i*180 - (midOff % 180);
     drawThemeProp(mx, GROUND_Y);
   }
 
+  drawAmbientDust(accent);
+
   ctx.fillStyle = currentLevel.groundColor;
   ctx.fillRect(0, GROUND_Y, W, H-GROUND_Y);
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.fillRect(0, GROUND_Y, W, 6);
+  drawGroundTexture(accent);
+}
+
+function drawAmbientDust(accent){
+  var col = accent==='mine' ? '255,205,120' : (accent==='ranch' ? '255,150,60' : '233,216,174');
+  for (var i=0;i<AMBIENT_DUST.length;i++){
+    var m = AMBIENT_DUST[i];
+    var dx = ((m.baseX - frame*m.speed - camX*0.15) % (W+60) + (W+60)) % (W+60) - 30;
+    var dy = m.y + Math.sin(frame*0.015+m.phase)*6;
+    ctx.fillStyle = 'rgba('+col+','+m.alpha+')';
+    ctx.fillRect(dx, dy, m.size, m.size);
+  }
+  if (accent==='ranch'){
+    for (i=0;i<EMBERS.length;i++){
+      var e = EMBERS[i];
+      var ex = ((e.baseX - camX*0.3) % (W+40) + (W+40)) % (W+40) - 20;
+      var ey = GROUND_Y - ((frame*e.rise + e.phase*40) % 260);
+      var a = clamp(1 - (GROUND_Y-ey)/260, 0, 1) * 0.7;
+      ctx.fillStyle = 'rgba(255,'+Math.floor(90+a*90)+',40,'+a+')';
+      ctx.fillRect(ex + Math.sin(frame*0.05+e.phase)*8, ey, e.size, e.size);
+    }
+  }
+}
+
+function drawFarLayer(x,y,accent){
+  if (accent==='mine'){
+    ctx.beginPath();
+    ctx.moveTo(x-30, GROUND_Y);
+    ctx.lineTo(x-22, y+14);
+    ctx.lineTo(x-2, y-6);
+    ctx.lineTo(x+22, y+18);
+    ctx.lineTo(x+48, y-2);
+    ctx.lineTo(x+80, GROUND_Y);
+    ctx.closePath(); ctx.fill();
+  } else if (accent==='canyon'){
+    ctx.beginPath();
+    ctx.moveTo(x-30, GROUND_Y);
+    ctx.lineTo(x-30, y+16);
+    ctx.lineTo(x+6, y-18);
+    ctx.lineTo(x+44, y+12);
+    ctx.lineTo(x+86, y-14);
+    ctx.lineTo(x+130, GROUND_Y);
+    ctx.closePath(); ctx.fill();
+    ctx.fillRect(x-4, y+2, 80, 5);
+  } else if (accent==='fort'){
+    drawSilhouetteHill(x,y);
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(x+30, y+40, 10, 60);
+    ctx.beginPath(); ctx.moveTo(x+24,y+40); ctx.lineTo(x+46,y+40); ctx.lineTo(x+35,y+28); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  } else {
+    drawSilhouetteHill(x,y);
+  }
 }
 function drawSilhouetteHill(x,y){
   ctx.beginPath();
@@ -1287,15 +1374,24 @@ function drawThemeProp(x,y){
     ctx.fillRect(x, y-90, 8, 90);
     ctx.fillRect(x+40, y-70, 8, 70);
     ctx.fillRect(x-4, y-96, 56, 8);
+    var pulse = 0.4 + Math.sin(frame*0.08 + x)*0.3;
+    ctx.fillStyle = 'rgba(200,150,60,'+clamp(pulse,0.1,0.8)+')';
+    ctx.fillRect(x+16, y-50, 3, 3);
+    ctx.fillStyle = 'rgba(0,0,0,0.72)';
   } else if (key==='train'){
-    ctx.fillRect(x, y-4, 60, 4);
+    ctx.fillRect(x, y-46, 4, 46);
+    ctx.fillRect(x-8, y-46, 20, 3);
+    ctx.strokeStyle = ctx.fillStyle; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(x-8,y-40); ctx.lineTo(x+50,y-30); ctx.stroke();
   } else if (key==='fort'){
     ctx.fillRect(x, y-70, 20, 70);
     ctx.fillRect(x-4, y-80, 28, 10);
+    ctx.fillRect(x+6, y-70, 8, 14);
   } else if (key==='canyon'){
     ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+16,y-80); ctx.lineTo(x+34,y); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x+40,y); ctx.lineTo(x+50,y-40); ctx.lineTo(x+62,y); ctx.closePath(); ctx.fill();
   } else if (key==='ranch'){
-    ctx.fillRect(x, y-50, 6, 50); ctx.fillRect(x+30,y-50,6,50); ctx.fillRect(x,y-50,36,5);
+    ctx.fillRect(x, y-50, 6, 50); ctx.fillRect(x+30,y-50,6,50); ctx.fillRect(x,y-50,36,5); ctx.fillRect(x,y-30,36,4);
   } else {
     ctx.fillRect(x-5, y-58, 10, 58);
     ctx.beginPath(); ctx.arc(x, y-58, 5, Math.PI, 0); ctx.fill();
@@ -1309,6 +1405,26 @@ function drawThemeProp(x,y){
     ctx.fillRect(-3, -14, 6, 14);
     ctx.beginPath(); ctx.arc(0, -14, 3, Math.PI, 0); ctx.fill();
     ctx.restore();
+  }
+}
+function drawGroundTexture(accent){
+  var camOff = camX % 60;
+  ctx.fillStyle = 'rgba(0,0,0,0.18)';
+  if (accent==='train'){
+    for (var x=-camOff; x<W+40; x+=40){
+      ctx.fillRect(x, GROUND_Y+10, 26, 5);
+    }
+    ctx.fillStyle = 'rgba(20,15,10,0.5)';
+    ctx.fillRect(0, GROUND_Y+16, W, 3);
+    ctx.fillRect(0, GROUND_Y+30, W, 3);
+  } else if (accent==='fort'){
+    for (x=-camOff; x<W+60; x+=60){
+      ctx.fillRect(x, GROUND_Y+4, 2, H-GROUND_Y-4);
+    }
+  } else {
+    for (x=-(camX*0.9 % 70); x<W+70; x+=70){
+      ctx.fillRect(x, GROUND_Y+18+((Math.floor((x+camX)/70)%2)?6:0), 20, 2);
+    }
   }
 }
 
@@ -1429,23 +1545,130 @@ function drawEnemy(e, camX){
   drawHumanoid(e.x-camX, e.y, e.facing, color, accent, pose, frame, false, e.hitFlash, null, true);
 }
 
+function drawBossBody(b, camX){
+  var flash = b.hitFlash>0;
+  var col = flash ? '#f4e4c1' : b.color;
+  var acc = flash ? '#f4e4c1' : b.accentColor;
+  var glow = flash ? '#f4e4c1' : b.glowColor;
+  ctx.save();
+  ctx.translate(b.x-camX, b.y);
+  ctx.scale(b.facing,1);
+  ctx.shadowColor = b.phase===2 ? '#ff7a30' : 'transparent';
+  ctx.shadowBlur = b.phase===2 ? 16 : 0;
+
+  switch(b.bossType){
+    case 'sheriff': {
+      ctx.fillStyle = col;
+      ctx.fillRect(-8,-16,6,16); ctx.fillRect(3,-16,6,16);
+      ctx.beginPath();
+      ctx.moveTo(-15,-14); ctx.lineTo(-18,-2); ctx.lineTo(18,-2); ctx.lineTo(15,-14);
+      ctx.lineTo(12,-40); ctx.lineTo(-12,-40); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = acc;
+      ctx.fillRect(-16,-40,32,6);
+      ctx.fillStyle = col;
+      ctx.fillRect(10,-34,16,6);
+      ctx.beginPath(); ctx.arc(0,-46,9,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = acc;
+      ctx.beginPath(); ctx.moveTo(-15,-50); ctx.lineTo(16,-50); ctx.lineTo(10,-58); ctx.lineTo(-9,-58); ctx.closePath(); ctx.fill();
+      ctx.fillRect(-7,-66,14,10);
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.moveTo(0,-22); ctx.lineTo(2,-19); ctx.lineTo(0,-16); ctx.lineTo(-2,-19); ctx.closePath(); ctx.fill();
+      break;
+    }
+    case 'cannon': {
+      ctx.fillStyle = acc;
+      ctx.beginPath(); ctx.arc(-18,-9,9,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(18,-9,9,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = col;
+      ctx.fillRect(-28,-32,56,24);
+      ctx.beginPath(); ctx.moveTo(-28,-32); ctx.lineTo(-18,-40); ctx.lineTo(18,-40); ctx.lineTo(28,-32); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#1b1b1b';
+      ctx.fillRect(2,-40,34,9);
+      ctx.beginPath(); ctx.arc(36,-35.5,5,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(-8,-20,3,0,Math.PI*2); ctx.fill();
+      break;
+    }
+    case 'golem': {
+      ctx.fillStyle = acc;
+      ctx.fillRect(-22,-14,44,14);
+      ctx.fillStyle = col;
+      ctx.fillRect(-20,-54,40,42);
+      ctx.fillStyle = '#1b1b1b';
+      ctx.fillRect(14,-46,20,10);
+      ctx.beginPath(); ctx.moveTo(34,-46); ctx.lineTo(46,-41); ctx.lineTo(34,-36); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(-8,-38,4,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(8,-38,4,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = acc;
+      for (var gi=-1;gi<=1;gi++){ ctx.fillRect(-20+gi*13+13,-54,4,42); }
+      break;
+    }
+    case 'ghostrider': {
+      ctx.fillStyle = col;
+      ctx.fillRect(-22,-22,6,22); ctx.fillRect(-8,-22,6,22);
+      ctx.fillRect(10,-22,6,22); ctx.fillRect(20,-22,6,22);
+      ctx.beginPath();
+      ctx.moveTo(-24,-18); ctx.lineTo(-26,-34); ctx.lineTo(18,-34); ctx.lineTo(28,-24);
+      ctx.lineTo(28,-14); ctx.lineTo(-24,-18); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(18,-34); ctx.lineTo(30,-38); ctx.lineTo(24,-26); ctx.closePath(); ctx.fill();
+      ctx.fillRect(-4,-52,7,20);
+      ctx.beginPath(); ctx.arc(-1,-56,7,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = acc;
+      ctx.beginPath(); ctx.moveTo(-9,-60); ctx.lineTo(6,-60); ctx.lineTo(3,-66); ctx.lineTo(-6,-66); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = glow;
+      for (var fi=0;fi<3;fi++){
+        var fx = -30-fi*8+Math.sin(frame*0.2+fi)*3, fy=-20-fi*4;
+        ctx.globalAlpha *= 1;
+        ctx.beginPath(); ctx.moveTo(fx,fy); ctx.lineTo(fx-6,fy-4); ctx.lineTo(fx-2,fy+3); ctx.closePath(); ctx.fill();
+      }
+      break;
+    }
+    case 'locomotive': {
+      ctx.fillStyle = acc;
+      ctx.beginPath(); ctx.arc(-22,-8,8,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(-2,-8,8,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(18,-8,8,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = col;
+      ctx.fillRect(-30,-40,58,28);
+      ctx.beginPath(); ctx.moveTo(28,-40); ctx.lineTo(28,-12); ctx.lineTo(36,-12); ctx.lineTo(40,-24); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-30,-12); ctx.lineTo(-38,-2); ctx.lineTo(-26,-2); ctx.lineTo(-22,-12); ctx.closePath(); ctx.fill();
+      ctx.fillRect(-14,-56,10,18);
+      ctx.beginPath(); ctx.ellipse(-9,-56,7,4,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(30,-26,4,0,Math.PI*2); ctx.fill();
+      break;
+    }
+    case 'redskull': {
+      ctx.fillStyle = col;
+      ctx.fillRect(-8,-18,6,18); ctx.fillRect(3,-18,6,18);
+      ctx.beginPath();
+      ctx.moveTo(-16,-16); ctx.lineTo(-19,-2); ctx.lineTo(19,-2); ctx.lineTo(16,-16);
+      ctx.lineTo(13,-44); ctx.lineTo(-13,-44); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = flash? '#f4e4c1' : '#e9d8ae'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(-12,-42); ctx.lineTo(12,-8); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(12,-42); ctx.lineTo(-12,-8); ctx.stroke();
+      ctx.fillStyle = col;
+      ctx.fillRect(11,-36,17,6);
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(0,-52,10,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = flash? col : '#1b120c';
+      ctx.beginPath(); ctx.arc(-3.5,-53,2,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(3.5,-53,2,0,Math.PI*2); ctx.fill();
+      ctx.fillRect(-2,-48,4,2);
+      ctx.fillStyle = acc;
+      ctx.beginPath(); ctx.moveTo(-11,-58); ctx.lineTo(11,-58); ctx.lineTo(7,-66); ctx.lineTo(-7,-66); ctx.closePath(); ctx.fill();
+      break;
+    }
+  }
+  ctx.shadowBlur = 0;
+  ctx.restore();
+}
+
 function drawBoss(b, camX){
   var alpha = b.dead ? clamp(b.deathTimer/26,0,1) : 1;
   ctx.save(); ctx.globalAlpha = alpha;
-  var color = b.hitFlash>0 ? '#f4e4c1' : b.color;
-  ctx.fillStyle = color;
-  ctx.shadowColor = b.phase===2 ? '#ff7a30' : 'transparent';
-  ctx.shadowBlur = b.phase===2 ? 14 : 0;
-  ctx.beginPath();
-  ctx.moveTo(b.x-camX-b.w/2, b.y);
-  ctx.lineTo(b.x-camX-b.w/2, b.y-b.h*0.7);
-  ctx.lineTo(b.x-camX, b.y-b.h);
-  ctx.lineTo(b.x-camX+b.w/2, b.y-b.h*0.7);
-  ctx.lineTo(b.x-camX+b.w/2, b.y);
-  ctx.closePath(); ctx.fill();
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = '#1b1b1b';
-  ctx.fillRect(b.x-camX+b.facing*(b.w/2-4), b.y-b.h*0.55, b.facing*20, 6);
+  drawBossBody(b, camX);
   ctx.restore();
 
   var bw = 200;
