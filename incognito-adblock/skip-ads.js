@@ -16,7 +16,12 @@
     ".jw-skip",
   ];
 
-  const TEXT_PATTERNS = [/skip ad/i, /saltar anuncio/i, /saltar publicidad/i, /omitir anuncio/i];
+  // Palabras que indican un control de "saltar" real, ya habilitado.
+  const SKIP_WORD = /\b(skip|saltar|omitir)\b/i;
+  // Si el texto todavia incluye la cuenta atras ("en 5 segundos", "in 5s",
+  // "5s"), el control aun no es clickeable de verdad: hay que esperar a
+  // que el texto cambie (o el numero llegue a 0 y desaparezca).
+  const STILL_COUNTING = /\d+\s*(segundos?|seconds?|\bs\b)/i;
 
   function looksClickable(el) {
     if (!el || el.dataset.__adblockSkipped) return false;
@@ -29,33 +34,50 @@
     return true;
   }
 
-  function findSkipButton() {
+  function isReadySkipText(text) {
+    return text.length > 0 && text.length < 40 && SKIP_WORD.test(text) && !STILL_COUNTING.test(text);
+  }
+
+  function findBySelector() {
     for (const selector of SKIP_SELECTORS) {
       const el = document.querySelector(selector);
       if (looksClickable(el)) return el;
     }
-    const candidates = document.querySelectorAll("button, div[role='button'], span[role='button'], a");
+    return null;
+  }
+
+  // Barrido amplio por texto: cubre players con markup propio (divs/spans
+  // sin clase reconocible). Es mas costoso, por eso se llama solo desde
+  // el intervalo, no en cada mutacion del DOM.
+  function findByText() {
+    const candidates = document.querySelectorAll("button, a, div, span");
     for (const el of candidates) {
+      if (el.children.length > 2) continue; // evita contenedores grandes
       const text = (el.textContent || "").trim();
-      if (text.length > 0 && text.length < 40 && TEXT_PATTERNS.some((re) => re.test(text)) && looksClickable(el)) {
-        return el;
-      }
+      if (isReadySkipText(text) && looksClickable(el)) return el;
     }
     return null;
   }
 
-  function tryClickSkip() {
-    const btn = findSkipButton();
-    if (btn) {
-      btn.dataset.__adblockSkipped = "1";
-      btn.click();
-    }
+  function click(el) {
+    el.dataset.__adblockSkipped = "1";
+    el.click();
   }
 
-  const observer = new MutationObserver(() => tryClickSkip());
+  function fastCheck() {
+    const el = findBySelector();
+    if (el) click(el);
+  }
+
+  function fullCheck() {
+    const el = findBySelector() || findByText();
+    if (el) click(el);
+  }
+
+  const observer = new MutationObserver(fastCheck);
   observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
 
-  // Fallback por si el boton aparece sin disparar una mutacion visible
-  // (ej. solo cambia una clase que oculta/muestra via CSS externo).
-  setInterval(tryClickSkip, 1000);
+  // El barrido por texto corre cada segundo: alcanza para no perderse la
+  // ventana en la que el boton pasa de "cuenta atras" a "clickeable".
+  setInterval(fullCheck, 1000);
 })();
