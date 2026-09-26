@@ -100,6 +100,8 @@
   .scorebadge.warm{background:var(--warn-soft); color:var(--warn);}
   .scorebadge.cold{background:var(--surface-2); color:var(--text-muted);}
   .quickmark{width:28px; height:28px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--good); font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:none;}
+  .wabtn{width:28px; height:28px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:#2FA84F; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:none;}
+  .wabtn[disabled]{opacity:.35; cursor:default;}
 
   .filterrow{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:2px;}
   .filterrow button{flex:none; border:1px solid var(--border); background:var(--surface); color:var(--text); padding:6px 12px; border-radius:999px; font-size:12px; cursor:pointer;}
@@ -362,8 +364,14 @@
 
     <div class="card">
       <h2>Datos</h2>
-      <div class="sub">Todo se guarda solo en esta computadora, no se sincroniza entre dispositivos.</div>
-      <div class="confirmzone">
+      <div class="sub">Todo se guarda solo en esta computadora, no se sincroniza entre dispositivos. Exportá un respaldo de vez en cuando por las dudas.</div>
+      <div class="btnrow" style="margin-top:0;">
+        <button class="btn secondary" id="export-btn">Exportar datos</button>
+        <button class="btn secondary" id="import-btn">Importar datos</button>
+      </div>
+      <input type="file" id="import-file-input" accept="application/json" hidden>
+      <div id="import-status" style="font-size:12px; color:var(--text-muted); margin-top:8px;"></div>
+      <div class="confirmzone" style="margin-top:14px;">
         <button class="btn danger" id="reset-btn">Borrar todo y empezar de cero</button>
       </div>
     </div>
@@ -404,6 +412,9 @@
   <div class="field">
     <label>Teléfono</label>
     <input type="tel" id="f-phone" placeholder="Ej: 11 5555-5555">
+  </div>
+  <div class="btnrow" style="margin-top:0;">
+    <button class="btn secondary" id="open-wa-btn" type="button">Abrir WhatsApp</button>
   </div>
   <div class="field">
     <label>Vehículo de interés</label>
@@ -680,10 +691,31 @@
     renderAlerts();
   }
 
+  function canNotify(){ return typeof Notification !== "undefined"; }
+  function requestNotifyPermission(){
+    if(canNotify() && Notification.permission==="default"){
+      Notification.requestPermission().catch(function(){});
+    }
+  }
+  var notifiedState={};
+  function maybeNotify(l,b){
+    if(!canNotify() || Notification.permission!=="granted") return;
+    if(notifiedState[l.id]===b.cls) return;
+    notifiedState[l.id]=b.cls;
+    var title = b.cls==="sla-bad" ? "¡Respondé ya!" : "Respondé pronto";
+    var body = (l.name||"Un lead")+" lleva "+Math.round(b.minutes)+" min sin respuesta.";
+    try{ new Notification(title,{body:body}); }catch(e){}
+  }
+
   function renderAlerts(){
     var active=state.leads.filter(function(l){return l.status!=="pasado" && l.status!=="perdido";});
+    active.forEach(function(l){
+      var b=contactBadge(l);
+      if(b && b.cls==="sla-good") delete notifiedState[l.id];
+    });
     var withBadge=active.map(function(l){return {l:l,b:contactBadge(l)};}).filter(function(x){return x.b && x.b.minutes>=15;});
     withBadge.sort(function(a,b){return b.b.minutes-a.b.minutes;});
+    withBadge.forEach(function(x){ maybeNotify(x.l,x.b); });
     var list=$("alerts-list");
     list.innerHTML="";
     if(!withBadge.length){
@@ -693,11 +725,13 @@
     withBadge.forEach(function(x){
       var l=x.l, b=x.b;
       var mm = b.minutes>=1440 ? Math.round(b.minutes/60)+"h sin responder" : Math.round(b.minutes)+" min sin responder";
+      var wa=waLink(l.phone);
       var div=document.createElement("div");
       div.className="todoitem";
       div.setAttribute("data-lead",l.id);
       div.innerHTML = '<div style="flex:1;"><div class="name">'+escapeHtml(l.name||"Sin nombre")+'</div>'+
         '<div class="meta">'+mm+'</div></div>'+
+        (wa ? '<button class="wabtn" data-wa="'+wa+'" title="Abrir WhatsApp">&#128172;</button>' : '')+
         '<button class="quickmark" data-markcontact="'+l.id+'" title="Marcar que ya respondiste">&#10003;</button>'+
         '<span class="chip '+b.cls+'">'+b.label+'</span>';
       list.appendChild(div);
@@ -729,6 +763,23 @@
     if(s>=40) return {cls:"warm",label:"🌤 Tibio"};
     return {cls:"cold",label:"❄️ Frío"};
   }
+  function normalizeArPhone(raw){
+    var digits=(raw||"").replace(/\D/g,"");
+    if(!digits) return "";
+    if(digits.charAt(0)==="0") digits=digits.slice(1);
+    if(digits.indexOf("54")===0){
+      var rest=digits.slice(2);
+      if(rest.charAt(0)!=="9") rest="9"+rest;
+      return "54"+rest;
+    }
+    digits=digits.replace(/^(\d{2,4})15(\d+)$/,"$1$2");
+    return "549"+digits;
+  }
+  function waLink(rawPhone){
+    var n=normalizeArPhone(rawPhone);
+    return n ? "https://wa.me/"+n : null;
+  }
+
   function minutesSince(ts){ return ts?(Date.now()-ts)/60000:Infinity; }
   function contactBadge(l){
     if(l.status==="pasado"||l.status==="perdido") return null;
@@ -781,6 +832,7 @@
       for(var i=0;i<5;i++){ dots+='<span class="dot'+(i<comp?" on":"")+'"></span>'; }
       var sc=scoreLabel(leadScore(l));
       var badge=contactBadge(l);
+      var wa=waLink(l.phone);
       var card=document.createElement("div");
       card.className="leadcard";
       card.setAttribute("data-lead",l.id);
@@ -793,6 +845,7 @@
         '</div></div>'+
         '<div class="bottom"><div class="dots">'+dots+'</div>'+
         '<div style="display:flex; align-items:center; gap:8px;">'+
+        (wa ? '<button class="wabtn" data-wa="'+wa+'" title="Abrir WhatsApp">&#128172;</button>' : '')+
         (badge && badge.minutes>=15 ? '<button class="quickmark" data-markcontact="'+l.id+'" title="Marcar que ya respondiste">&#10003;</button><span class="chip '+badge.cls+'">'+badge.label+'</span>' : '')+
         '<span style="font-size:11px;color:var(--text-muted);">'+comp+'/5 datos</span>'+
         '</div></div>';
@@ -1005,6 +1058,11 @@
 
   $("fab-add-lead").addEventListener("click",function(){ openLeadOverlay(null); });
   $("overlay-close").addEventListener("click",function(){ $("lead-overlay").hidden=true; });
+  $("open-wa-btn").addEventListener("click",function(){
+    var link=waLink($("f-phone").value);
+    if(!link){ alert("Cargá un teléfono válido primero."); return; }
+    window.open(link,"_blank");
+  });
 
   $("save-lead-btn").addEventListener("click",function(){
     var data=readForm();
@@ -1106,6 +1164,11 @@
   });
 
   document.addEventListener("click",function(e){
+    var waBtn=e.target.closest("[data-wa]");
+    if(waBtn){
+      window.open(waBtn.getAttribute("data-wa"),"_blank");
+      return;
+    }
     var markBtn=e.target.closest("[data-markcontact]");
     if(markBtn){
       var mid=markBtn.getAttribute("data-markcontact");
@@ -1270,6 +1333,48 @@
     $(id).addEventListener("input",computeCuota);
   });
 
+  $("export-btn").addEventListener("click",function(){
+    var payload=JSON.stringify(state,null,2);
+    var blob=new Blob([payload],{type:"application/json"});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");
+    a.href=url;
+    a.download="turno-datero-backup-"+todayKey()+".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); },2000);
+    $("import-status").textContent="Respaldo descargado.";
+  });
+
+  $("import-btn").addEventListener("click",function(){
+    $("import-file-input").click();
+  });
+  $("import-file-input").addEventListener("change",function(e){
+    var file=e.target.files && e.target.files[0];
+    e.target.value="";
+    if(!file) return;
+    var reader=new FileReader();
+    reader.onload=function(){
+      var data;
+      try{
+        data=JSON.parse(reader.result);
+        if(!data || !Array.isArray(data.leads)) throw new Error("El archivo no tiene el formato esperado.");
+      }catch(err){
+        $("import-status").textContent="No se pudo leer el archivo: "+err.message;
+        return;
+      }
+      if(!confirm("Esto va a reemplazar todos tus datos actuales por los del archivo. ¿Continuar?")) return;
+      state=data;
+      state.demo=false;
+      save();
+      renderAll();
+      $("import-status").textContent="Datos importados correctamente.";
+    };
+    reader.onerror=function(){ $("import-status").textContent="No se pudo leer el archivo."; };
+    reader.readAsText(file);
+  });
+
   var resetArmed=false;
   $("reset-btn").addEventListener("click",function(){
     if(!resetArmed){
@@ -1287,7 +1392,8 @@
 
   load();
   renderAll();
-  setInterval(function(){ if(!$("tab-hoy").hidden) renderAlerts(); },30000);
+  requestNotifyPermission();
+  setInterval(function(){ renderAlerts(); },30000);
 })();
 </script>
 </body>

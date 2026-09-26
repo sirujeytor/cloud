@@ -1,15 +1,20 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, Tray, Menu, shell, nativeImage } = require("electron");
 const path = require("path");
 const https = require("https");
 
+let mainWindow = null;
+let tray = null;
+let isQuitting = false;
+
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 440,
     height: 820,
     minWidth: 380,
     minHeight: 560,
     title: "Turno Datero",
     autoHideMenuBar: true,
+    icon: path.join(__dirname, "assets", "icon.ico"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -17,19 +22,79 @@ function createWindow() {
       sandbox: true
     }
   });
-  win.setMenuBarVisibility(false);
-  win.loadFile(path.join(__dirname, "renderer", "index.html"));
+  mainWindow.setMenuBarVisibility(false);
+  mainWindow.loadFile(path.join(__dirname, "renderer", "index.html"));
+
+  // Any link the page opens (WhatsApp links, external URLs) goes to the
+  // user's real browser instead of a new Electron window.
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: "deny" };
+  });
+
+  // Closing the window hides it to the tray instead of quitting, so the
+  // app keeps watching leads and can still show notifications in the
+  // background. "Salir" from the tray menu is the real quit.
+  mainWindow.on("close", (event) => {
+    if (!isQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
+  });
+}
+
+function createTray() {
+  const icon = nativeImage.createFromPath(path.join(__dirname, "assets", "icon-32.png"));
+  tray = new Tray(icon);
+  tray.setToolTip("Turno Datero");
+  const menu = Menu.buildFromTemplate([
+    {
+      label: "Abrir Turno Datero",
+      click: () => {
+        if (mainWindow) {
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      }
+    },
+    { type: "separator" },
+    {
+      label: "Salir",
+      click: () => {
+        isQuitting = true;
+        app.quit();
+      }
+    }
+  ]);
+  tray.setContextMenu(menu);
+  tray.on("click", () => {
+    if (!mainWindow) return;
+    if (mainWindow.isVisible()) {
+      mainWindow.hide();
+    } else {
+      mainWindow.show();
+      mainWindow.focus();
+    }
+  });
 }
 
 app.whenReady().then(() => {
+  if (process.platform === "win32") {
+    app.setAppUserModelId("com.turnodatero.app");
+  }
   createWindow();
+  createTray();
   app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    } else if (mainWindow) {
+      mainWindow.show();
+    }
   });
 });
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+app.on("before-quit", () => {
+  isQuitting = true;
 });
 
 function deepseekChat(apiKey, prompt, wantJson) {
