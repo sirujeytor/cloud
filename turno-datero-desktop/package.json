@@ -1,0 +1,36 @@
+{
+  "name": "turno-datero-desktop",
+  "version": "1.0.0",
+  "description": "App de escritorio personal para organizar tu turno como datero: leads, publicaciones diarias, plantillas, calculadora de cuota y funciones con IA usando tu propia API key de DeepSeek.",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.turnodatero.app",
+    "productName": "Turno Datero",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}

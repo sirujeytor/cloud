@@ -1,0 +1,1294 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turno Datero</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#F5F3EC; --surface:#FFFFFF; --surface-2:#ECE6D8; --border:#DDD5C2;
+    --text:#211D17; --text-muted:#6E6656;
+    --accent:#9C6F1E; --accent-strong:#7A5716; --accent-soft:#F0DFB8; --accent-contrast:#FFFFFF;
+    --secondary:#2E4E6C; --secondary-soft:#DCE6EE;
+    --good:#2C7A4B; --good-soft:#DCEFE1;
+    --warn:#B5701E; --warn-soft:#F5E4CB;
+    --bad:#AA3C3C; --bad-soft:#F5DEDE;
+    --shadow:0 1px 2px rgba(33,29,23,.06), 0 4px 14px rgba(33,29,23,.06);
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#17140F; --surface:#221E17; --surface-2:#2B2620; --border:#3C3527;
+      --text:#F3EFE4; --text-muted:#B2A891;
+      --accent:#DDAA4C; --accent-strong:#EFC677; --accent-soft:#3A2E14; --accent-contrast:#1A1509;
+      --secondary:#7FA3C4; --secondary-soft:#1F2E3B;
+      --good:#57B57F; --good-soft:#1B3126;
+      --warn:#E3993F; --warn-soft:#3A2A12;
+      --bad:#E27373; --bad-soft:#3A1F1F;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.35);
+      color-scheme:dark;
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%; margin:0;}
+  body{background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',system-ui,sans-serif; padding-bottom:78px;}
+  h1,h2,h3{font-family:'Bebas Neue',system-ui,sans-serif; letter-spacing:.02em; margin:0;}
+  .mono{font-family:'IBM Plex Mono','IBM Plex Sans',monospace; font-variant-numeric:tabular-nums;}
+  button{font-family:inherit;}
+  a{color:var(--secondary);}
+
+  .topbar{
+    position:sticky; top:0; z-index:20; -webkit-app-region:drag;
+    background:var(--surface); border-bottom:1px solid var(--border);
+    padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .topbar button, .topbar .timerwidget{ -webkit-app-region:no-drag; }
+  .brand{display:flex; align-items:baseline; gap:8px;}
+  .brand h1{font-size:22px; color:var(--text);}
+  .brand span{font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em;}
+  .timerwidget{display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 8px 6px 14px;}
+  .timerwidget .t{font-size:15px; font-weight:600; min-width:52px; text-align:right;}
+  .timerbtn{border:none; border-radius:999px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:var(--accent); color:var(--accent-contrast); font-size:14px;}
+  .timerbtn.running{background:var(--bad);}
+
+  main{max-width:640px; margin:0 auto; padding:16px; display:flex; flex-direction:column; gap:14px;}
+  .tab[hidden]{display:none;}
+
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; box-shadow:var(--shadow);}
+  .card h2{font-size:19px; margin-bottom:2px;}
+  .card .sub{font-size:12px; color:var(--text-muted); margin-bottom:12px;}
+
+  .bignum{font-size:40px; font-weight:600; line-height:1;}
+  .bignum small{font-size:15px; color:var(--text-muted); font-weight:500; font-family:'IBM Plex Sans',sans-serif;}
+  .bar{height:10px; border-radius:999px; background:var(--surface-2); overflow:hidden; margin:10px 0 6px; position:relative;}
+  .bar > i{display:block; height:100%; border-radius:999px; background:var(--warn); transition:width .25s;}
+  .bar.ingoal > i{background:var(--good);}
+  .bar.over > i{background:var(--accent);}
+  .barcaption{display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted);}
+
+  .counters{display:flex; gap:8px; margin-top:12px;}
+  .counter{flex:1; background:var(--surface-2); border-radius:12px; padding:8px 6px; text-align:center;}
+  .counter .lbl{font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.04em;}
+  .counter .val{font-size:20px; font-weight:600; margin:4px 0;}
+  .counter .row{display:flex; justify-content:center; gap:6px;}
+  .stepbtn{width:26px; height:26px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .stepbtn:active{background:var(--accent-soft);}
+
+  .banner{background:var(--secondary-soft); border:1px solid var(--secondary); border-radius:12px; padding:10px 12px; font-size:13px; display:flex; gap:10px; align-items:flex-start;}
+  .banner button{margin-left:auto; background:none; border:none; color:var(--secondary); font-size:12px; text-decoration:underline; cursor:pointer; flex:none;}
+
+  .todolist{display:flex; flex-direction:column; gap:8px; margin-top:10px;}
+  .todoitem{display:flex; align-items:center; gap:10px; padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--surface-2); cursor:pointer;}
+  .todoitem .name{font-weight:600; font-size:14px;}
+  .todoitem .meta{font-size:11px; color:var(--text-muted);}
+  .empty{font-size:13px; color:var(--text-muted); padding:10px 0;}
+
+  .chip{display:inline-flex; align-items:center; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.03em; white-space:nowrap;}
+  .chip.nuevo{background:var(--surface-2); color:var(--text-muted);}
+  .chip.contactado{background:var(--secondary-soft); color:var(--secondary);}
+  .chip.filtrando{background:var(--warn-soft); color:var(--warn);}
+  .chip.calificado{background:var(--good-soft); color:var(--good);}
+  .chip.pasado{background:var(--accent-soft); color:var(--accent-strong);}
+  .chip.perdido{background:var(--bad-soft); color:var(--bad);}
+  .chip.sla-good{background:var(--good-soft); color:var(--good);}
+  .chip.sla-warn{background:var(--warn-soft); color:var(--warn);}
+  .chip.sla-bad{background:var(--bad-soft); color:var(--bad);}
+  .scorebadge{display:inline-flex; align-items:center; gap:3px; padding:3px 9px; border-radius:999px; font-size:11px; font-weight:600;}
+  .scorebadge.hot{background:var(--bad-soft); color:var(--bad);}
+  .scorebadge.warm{background:var(--warn-soft); color:var(--warn);}
+  .scorebadge.cold{background:var(--surface-2); color:var(--text-muted);}
+  .quickmark{width:28px; height:28px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--good); font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:none;}
+
+  .filterrow{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:2px;}
+  .filterrow button{flex:none; border:1px solid var(--border); background:var(--surface); color:var(--text); padding:6px 12px; border-radius:999px; font-size:12px; cursor:pointer;}
+  .filterrow button.active{background:var(--text); color:var(--bg); border-color:var(--text);}
+
+  .leadcard{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 14px; box-shadow:var(--shadow); cursor:pointer; display:flex; flex-direction:column; gap:6px;}
+  .leadcard .top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .leadcard .name{font-weight:600; font-size:15px;}
+  .leadcard .veh{font-size:12px; color:var(--text-muted);}
+  .leadcard .bottom{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:2px;}
+  .dots{display:flex; gap:4px;}
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--surface-2); border:1px solid var(--border);}
+  .dot.on{background:var(--good); border-color:var(--good);}
+
+  .fab{position:fixed; right:18px; bottom:90px; z-index:15; background:var(--accent); color:var(--accent-contrast); border:none; border-radius:999px; padding:14px 20px; font-weight:600; font-size:14px; box-shadow:var(--shadow); cursor:pointer; display:flex; align-items:center; gap:8px;}
+
+  .bottomnav{position:fixed; left:0; right:0; bottom:0; z-index:20; background:var(--surface); border-top:1px solid var(--border); display:flex;}
+  .bottomnav button{flex:1; background:none; border:none; padding:10px 4px 8px; display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-muted); font-size:11px; cursor:pointer;}
+  .bottomnav button .ic{font-size:18px;}
+  .bottomnav button.active{color:var(--accent);}
+
+  .overlay{position:fixed; inset:0; z-index:30; background:var(--bg); overflow-y:auto; padding:16px 16px 32px;}
+  .overlay .ohead{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .overlay .ohead button{background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 14px; font-size:13px; cursor:pointer; color:var(--text);}
+  .field{display:flex; flex-direction:column; gap:5px; margin-bottom:14px;}
+  .field label{font-size:12px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:.03em;}
+  .field input[type=text], .field input[type=tel], .field input[type=number], .field input[type=password], .field select, .field textarea{
+    border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:10px 12px; font-size:14px; font-family:inherit; width:100%;
+  }
+  .field textarea{min-height:70px; resize:vertical;}
+  .checkrow{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--surface); margin-bottom:10px;}
+  .checkrow input{width:18px; height:18px;}
+  .checkrow .l{font-size:14px;}
+  .fieldset{border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:14px; background:var(--surface-2);}
+  .fieldset legend{padding:0 6px; font-size:12px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:.03em;}
+  .progresspill{font-size:12px; font-weight:600; padding:3px 10px; border-radius:999px; background:var(--good-soft); color:var(--good);}
+
+  .btnrow{display:flex; gap:8px; margin-top:18px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:12px 16px; font-size:14px; font-weight:600; cursor:pointer; flex:1;}
+  .btn.primary{background:var(--accent); color:var(--accent-contrast);}
+  .btn.secondary{background:var(--surface-2); color:var(--text); border:1px solid var(--border);}
+  .btn.danger{background:var(--bad-soft); color:var(--bad);}
+
+  .tplcard{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; box-shadow:var(--shadow);}
+  .tplcard h3{font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:14px; margin-bottom:6px;}
+  .tplcard p{font-size:13px; color:var(--text-muted); line-height:1.5; margin:0 0 10px;}
+  .copybtn{background:var(--secondary-soft); color:var(--secondary); border:none; border-radius:8px; padding:8px 14px; font-size:12px; font-weight:600; cursor:pointer;}
+  .copybtn.done{background:var(--good-soft); color:var(--good);}
+
+  .weekhead{font-size:13px; color:var(--text-muted); margin-bottom:4px;}
+  .chart{display:flex; align-items:flex-end; gap:6px; height:140px; margin-top:14px; position:relative;}
+  .chartbar{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end;}
+  .track{width:100%; max-width:30px; height:100px; position:relative; display:flex; align-items:flex-end;}
+  .track .band{position:absolute; left:-3px; right:-3px; background:var(--good-soft); opacity:.6; border-radius:4px; pointer-events:none;}
+  .chartbar .fill{width:100%; border-radius:5px 5px 3px 3px; background:var(--accent); position:relative; min-height:2px;}
+  .chartbar .fill.today{background:var(--accent-strong);}
+  .chartbar .dlabel{font-size:10px; color:var(--text-muted); text-transform:uppercase;}
+  .chartbar .tooltip{position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); font-size:11px; padding:3px 7px; border-radius:6px; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .15s; z-index:2;}
+  .track:hover .tooltip, .track:active .tooltip{opacity:1;}
+
+  .statgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px;}
+  .stat{background:var(--surface-2); border-radius:10px; padding:10px 8px; text-align:center;}
+  .stat .n{font-size:20px; font-weight:600;}
+  .stat .l{font-size:10px; color:var(--text-muted); text-transform:uppercase; margin-top:2px;}
+
+  .confirmzone{display:flex; gap:8px; align-items:center;}
+  .disclaimer{font-size:11px; color:var(--text-muted); line-height:1.5; margin-top:10px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <h1>Turno Datero</h1>
+    <span id="today-label"></span>
+  </div>
+  <div class="timerwidget">
+    <span class="t mono" id="timer-display">0:00</span>
+    <button class="timerbtn" id="timer-toggle">&#9654;</button>
+  </div>
+</div>
+
+<main>
+  <section id="tab-hoy" class="tab">
+    <div class="banner" id="demo-banner" hidden>
+      <span>Estos son datos de ejemplo para que veas cómo funciona. Cargá los tuyos cuando quieras — el botón para borrar todo está en la pestaña Semana.</span>
+      <button id="dismiss-banner">Ocultar</button>
+    </div>
+
+    <div class="card">
+      <h2>Alertas de respuesta</h2>
+      <div class="sub">Leads activos sin marcar respuesta hace rato — respondé rápido, es lo que más te diferencia</div>
+      <div class="todolist" id="alerts-list"></div>
+    </div>
+
+    <div class="card">
+      <h2>Publicaciones de hoy</h2>
+      <div class="sub">Objetivo: 15 a 20 publicaciones en redes, Marketplace y grupos</div>
+      <div class="bignum mono" id="posts-total">0 <small>/ 15–20</small></div>
+      <div class="bar" id="posts-bar"><i style="width:0%"></i></div>
+      <div class="barcaption"><span>0</span><span>15</span><span>20</span></div>
+      <div class="counters">
+        <div class="counter" data-platform="marketplace">
+          <div class="lbl">Marketplace</div>
+          <div class="val mono" data-count>0</div>
+          <div class="row"><button class="stepbtn" data-step="-1">–</button><button class="stepbtn" data-step="1">+</button></div>
+        </div>
+        <div class="counter" data-platform="grupos">
+          <div class="lbl">Grupos</div>
+          <div class="val mono" data-count>0</div>
+          <div class="row"><button class="stepbtn" data-step="-1">–</button><button class="stepbtn" data-step="1">+</button></div>
+        </div>
+        <div class="counter" data-platform="redes">
+          <div class="lbl">Redes</div>
+          <div class="val mono" data-count>0</div>
+          <div class="row"><button class="stepbtn" data-step="-1">–</button><button class="stepbtn" data-step="1">+</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Tiempo de hoy</h2>
+      <div class="sub">Objetivo: 2 a 3 horas dedicadas</div>
+      <div class="bignum mono" id="time-total">0:00 <small>/ 2–3 h</small></div>
+      <div class="bar" id="time-bar"><i style="width:0%"></i></div>
+      <div class="barcaption"><span>0h</span><span>2h</span><span>3h</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Para hacer hoy</h2>
+      <div class="sub">Leads sin filtrado completo, ordenados por más viejos</div>
+      <div class="todolist" id="todo-list"></div>
+    </div>
+  </section>
+
+  <section id="tab-leads" class="tab" hidden>
+    <div class="filterrow" id="status-filters"></div>
+    <div style="display:flex; justify-content:flex-end; margin-bottom:2px;">
+      <button class="btn secondary" id="sort-toggle" style="flex:none; padding:8px 14px; font-size:12px;">Ordenar: Más recientes</button>
+    </div>
+    <div id="leads-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+  </section>
+
+  <section id="tab-herramientas" class="tab" hidden>
+    <div class="card">
+      <h2>Ajustes de IA</h2>
+      <div class="sub">Usá tu propia cuenta de DeepSeek para analizar chats y generar publicaciones. La key se guarda solo en esta computadora.</div>
+      <div class="field">
+        <label>API key de DeepSeek</label>
+        <input type="password" id="ai-key-input" placeholder="sk-...">
+      </div>
+      <div class="btnrow" style="margin-top:0;">
+        <button class="btn primary" id="ai-key-save">Guardar</button>
+        <button class="btn secondary" id="ai-key-test">Probar conexión</button>
+      </div>
+      <div id="ai-key-status" style="font-size:12px; color:var(--text-muted); margin-top:8px;"></div>
+      <div class="disclaimer">Conseguí tu key en platform.deepseek.com → API Keys. El uso se cobra a tu cuenta de DeepSeek.</div>
+    </div>
+
+    <div class="card">
+      <h2>Generador de publicaciones</h2>
+      <div class="sub">Cargá los datos del vehículo y generá textos listos para publicar, con estructura de venta</div>
+      <div class="field">
+        <label>Vehículo (marca, modelo, año)</label>
+        <input type="text" id="gen-vehiculo" placeholder="Ej: Toyota Corolla XEI 2018">
+      </div>
+      <div class="field">
+        <label>Kilometraje</label>
+        <input type="text" id="gen-km" placeholder="Ej: 68.000 km">
+      </div>
+      <div class="field">
+        <label>Precio</label>
+        <input type="text" id="gen-precio" placeholder="Ej: $8.500.000">
+      </div>
+      <div class="field">
+        <label>Detalles extra (opcional)</label>
+        <textarea id="gen-extra" placeholder="Ej: único dueño, service oficial, toma usado, financiación disponible"></textarea>
+      </div>
+      <button class="btn primary" id="gen-btn" style="width:100%;">Generar textos</button>
+      <div id="tplgen-status" style="font-size:12px; color:var(--text-muted); margin-top:8px;"></div>
+      <div id="gen-results" style="display:flex; flex-direction:column; gap:10px; margin-top:12px;"></div>
+    </div>
+
+    <div class="card">
+      <h2>Calculadora de cuota</h2>
+      <div class="sub">Estimación rápida para responder consultas de financiación. Confirmá la tasa real con la financiera antes de comprometerte a un número.</div>
+      <div class="field">
+        <label>Precio del vehículo</label>
+        <input type="number" id="calc-precio" placeholder="Ej: 8500000">
+      </div>
+      <div class="field">
+        <label>Entrega / anticipo</label>
+        <input type="number" id="calc-entrega" placeholder="Ej: 2000000">
+      </div>
+      <div class="field">
+        <label>Plazo (meses)</label>
+        <input type="number" id="calc-plazo" placeholder="Ej: 24">
+      </div>
+      <div class="field">
+        <label>Tasa nominal anual estimada (%)</label>
+        <input type="number" id="calc-tasa" placeholder="Ej: 60">
+      </div>
+      <div class="bignum mono" id="calc-result">—</div>
+      <div class="sub" id="calc-caption" style="margin-bottom:0;"></div>
+    </div>
+
+    <div class="card">
+      <h2>Respuestas rápidas</h2>
+      <div class="sub">Tocá copiar y pegá en el chat</div>
+    </div>
+    <div id="tpl-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+    <button class="btn secondary" id="add-tpl-btn" style="margin-top:4px;">+ Agregar plantilla</button>
+    <div class="card" id="new-tpl-form" hidden style="margin-top:10px;">
+      <div class="field">
+        <label>Título</label>
+        <input type="text" id="ntpl-title" placeholder="Ej: Consulta de entrega">
+      </div>
+      <div class="field">
+        <label>Texto de la respuesta</label>
+        <textarea id="ntpl-text" placeholder="Escribí la respuesta que vas a copiar y pegar"></textarea>
+      </div>
+      <div class="btnrow" style="margin-top:0;">
+        <button class="btn primary" id="ntpl-save">Guardar plantilla</button>
+        <button class="btn secondary" id="ntpl-cancel">Cancelar</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-semana" class="tab" hidden>
+    <div class="card">
+      <h2>Esta semana</h2>
+      <div class="weekhead" id="week-range"></div>
+      <div class="chart" id="week-chart"></div>
+    </div>
+
+    <div class="card">
+      <h2>Publicaciones</h2>
+      <div class="bignum mono" id="week-posts-total">0 <small>/ 105–140</small></div>
+      <div class="bar" id="week-posts-bar"><i style="width:0%"></i></div>
+    </div>
+
+    <div class="card">
+      <h2>Horas dedicadas</h2>
+      <div class="bignum mono" id="week-time-total">0h <small>/ 14–21 h</small></div>
+      <div class="bar" id="week-time-bar"><i style="width:0%"></i></div>
+    </div>
+
+    <div class="card">
+      <h2>Comisiones cobradas</h2>
+      <div class="sub">Suma de operaciones marcadas "cerrado" esta semana</div>
+      <div class="bignum mono" id="week-commission-total">$0 <small>/ $200.000–$500.000</small></div>
+      <div class="bar" id="week-commission-bar"><i style="width:0%"></i></div>
+    </div>
+
+    <div class="card">
+      <h2>Embudo de leads</h2>
+      <div class="sub">Total histórico por estado</div>
+      <div class="statgrid" id="funnel-grid"></div>
+    </div>
+
+    <div class="card">
+      <h2>Datos</h2>
+      <div class="sub">Todo se guarda solo en esta computadora, no se sincroniza entre dispositivos.</div>
+      <div class="confirmzone">
+        <button class="btn danger" id="reset-btn">Borrar todo y empezar de cero</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<button class="fab" id="fab-add-lead">+ Lead</button>
+
+<nav class="bottomnav">
+  <button data-tab="hoy" class="active"><span class="ic">&#128197;</span>Hoy</button>
+  <button data-tab="leads"><span class="ic">&#128100;</span>Leads</button>
+  <button data-tab="herramientas"><span class="ic">&#128172;</span>Herramientas</button>
+  <button data-tab="semana"><span class="ic">&#128202;</span>Semana</button>
+</nav>
+
+<div class="overlay" id="lead-overlay" hidden>
+  <div class="ohead">
+    <h2 id="overlay-title" style="font-size:20px;">Nuevo lead</h2>
+    <button id="overlay-close">Cerrar</button>
+  </div>
+
+  <fieldset class="fieldset">
+    <legend>Pegar chat con el cliente</legend>
+    <div class="field">
+      <textarea id="f-chatpaste" placeholder="Pegá acá la conversación de WhatsApp tal cual, con todo. La IA saca los datos que pueda y vos revisás antes de guardar."></textarea>
+    </div>
+    <div class="btnrow" style="margin-top:0;">
+      <button class="btn primary" id="analyze-chat-btn" type="button">Analizar con IA</button>
+      <button class="btn secondary" id="use-raw-chat-btn" type="button">Usar como nota sin analizar</button>
+    </div>
+    <div id="chat-ai-status" style="font-size:12px; color:var(--text-muted); margin-top:8px;"></div>
+  </fieldset>
+
+  <div class="field">
+    <label>Nombre</label>
+    <input type="text" id="f-name" placeholder="Ej: Martín Gómez">
+  </div>
+  <div class="field">
+    <label>Teléfono</label>
+    <input type="tel" id="f-phone" placeholder="Ej: 11 5555-5555">
+  </div>
+  <div class="field">
+    <label>Vehículo de interés</label>
+    <input type="text" id="f-vehicle" placeholder="Ej: Corolla 2018 / Honda Wave">
+  </div>
+  <div class="field">
+    <label>Plataforma</label>
+    <select id="f-platform">
+      <option value="marketplace">Marketplace</option>
+      <option value="grupo">Grupo de Facebook</option>
+      <option value="redes">Instagram / Estados</option>
+      <option value="otro">Otro</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Estado</label>
+    <select id="f-status">
+      <option value="nuevo">Nuevo</option>
+      <option value="contactado">Contactado</option>
+      <option value="filtrando">Filtrando</option>
+      <option value="calificado">Calificado</option>
+      <option value="pasado">Pasado a concesionaria</option>
+      <option value="perdido">Perdido</option>
+    </select>
+  </div>
+
+  <fieldset class="fieldset">
+    <legend>Datos básicos <span class="progresspill" id="completeness-pill">0/5</span></legend>
+    <div class="checkrow">
+      <input type="checkbox" id="f-dni">
+      <span class="l">DNI tomado</span>
+    </div>
+    <div class="field">
+      <label>Tiene vehículo para entregar</label>
+      <select id="f-tienevehiculo">
+        <option value="sin-consultar">Sin consultar</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+    <div class="field" id="f-vehdetalle-wrap">
+      <label>Detalle del vehículo a entregar</label>
+      <input type="text" id="f-vehdetalle" placeholder="Ej: Gol Trend 2015, 90.000km">
+    </div>
+    <div class="field">
+      <label>Monto disponible</label>
+      <input type="text" id="f-monto" placeholder="Ej: $2.500.000">
+    </div>
+    <div class="field">
+      <label>Busca financiación</label>
+      <select id="f-financiacion">
+        <option value="sin-consultar">Sin consultar</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Necesita financiera</label>
+      <select id="f-financiera">
+        <option value="sin-consultar">Sin consultar</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+  </fieldset>
+
+  <div class="field">
+    <label>Notas</label>
+    <textarea id="f-notes" placeholder="Cualquier detalle extra de la conversación"></textarea>
+  </div>
+
+  <fieldset class="fieldset" id="f-resultado-wrap" hidden>
+    <legend>Resultado de la operación</legend>
+    <div class="field">
+      <label>Resultado</label>
+      <select id="f-resultado">
+        <option value="pendiente">Pendiente</option>
+        <option value="cerrado">Cerrado</option>
+        <option value="no-cerrado">No se cerró</option>
+      </select>
+    </div>
+    <div class="field" id="f-comision-wrap" hidden>
+      <label>Comisión ($)</label>
+      <input type="number" id="f-comision" placeholder="Ej: 40000">
+    </div>
+  </fieldset>
+
+  <div class="btnrow">
+    <button class="btn primary" id="save-lead-btn">Guardar</button>
+    <button class="btn secondary" id="pass-lead-btn">Pasar a concesionaria</button>
+  </div>
+  <div class="btnrow">
+    <button class="btn danger" id="delete-lead-btn">Eliminar lead</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var STORE_KEY = "turno-datero-v1";
+  var AI_KEY_STORE = "deepseek-api-key";
+  var POSTS_MIN=15, POSTS_MAX=20, MIN_MIN=120, MAX_MIN=180;
+  var WEEK_POSTS_MIN=POSTS_MIN*7, WEEK_POSTS_MAX=POSTS_MAX*7, WEEK_MIN_MIN=MIN_MIN*7, WEEK_MAX_MIN=MAX_MIN*7;
+  var COMM_MIN=200000, COMM_MAX=500000;
+  var STATUS_LABELS={nuevo:"Nuevo",contactado:"Contactado",filtrando:"Filtrando",calificado:"Calificado",pasado:"Pasado",perdido:"Perdido"};
+  var PLATFORM_LABELS={marketplace:"Marketplace",grupo:"Grupo FB",redes:"Redes",otro:"Otro"};
+  var DAY_LABELS=["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+
+  function pad(n){return n<10?"0"+n:""+n;}
+  function dateKey(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+  function todayKey(){return dateKey(new Date());}
+  function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+  function money(n){ n=Number(n)||0; try{return "$"+n.toLocaleString("es-AR");}catch(e){return "$"+n;} }
+  function mondayOf(d){
+    var day=d.getDay(); var diff=(day===0?-6:1-day);
+    var m=new Date(d); m.setDate(d.getDate()+diff); m.setHours(0,0,0,0); return m;
+  }
+  function weekKeys(){
+    var mon=mondayOf(new Date()); var out=[];
+    for(var i=0;i<7;i++){ var d=new Date(mon); d.setDate(mon.getDate()+i); out.push(dateKey(d)); }
+    return out;
+  }
+
+  function defaultState(){
+    var wk=weekKeys();
+    var posts={}; posts[wk[0]]={marketplace:6,grupos:4,redes:2}; posts[wk[1]]={marketplace:7,grupos:5,redes:3};
+    posts[wk[2]]={marketplace:8,grupos:4,redes:4}; posts[wk[3]]={marketplace:5,grupos:3,redes:2};
+    var time={}; time[wk[0]]=95; time[wk[1]]=140; time[wk[2]]=160; time[wk[3]]=70;
+    var todayIdx = (new Date().getDay()+6)%7;
+    posts[wk[todayIdx]]=posts[wk[todayIdx]]||{marketplace:0,grupos:0,redes:0};
+    var now=Date.now();
+    return {
+      demo:true,
+      leads:[
+        {id:uid(),name:"Martín Gómez",phone:"11 5544-2210",vehicle:"Toyota Corolla 2018",platform:"marketplace",status:"filtrando",dni:true,tieneVehiculo:"si",vehDetalle:"VW Gol Trend 2014, 95.000km",monto:"$3.500.000",buscaFinanciacion:"si",necesitaFinanciera:"sin-consultar",notes:"Muy interesado, pidió video del motor.",createdAt:now-1000*60*60*26,passedAt:null,resultado:"pendiente",comision:0},
+        {id:uid(),name:"Rocío Fernández",phone:"11 3322-7788",vehicle:"Honda Wave 110",platform:"redes",status:"nuevo",dni:false,tieneVehiculo:"sin-consultar",vehDetalle:"",monto:"",buscaFinanciacion:"sin-consultar",necesitaFinanciera:"sin-consultar",notes:"Preguntó precio, todavía sin responder.",createdAt:now-1000*60*60*4,passedAt:null,resultado:"pendiente",comision:0},
+        {id:uid(),name:"Diego Ibarra",phone:"11 6677-9012",vehicle:"Ford Ka 2016",platform:"grupo",status:"calificado",dni:true,tieneVehiculo:"no",vehDetalle:"",monto:"$1.800.000 de entrega",buscaFinanciacion:"si",necesitaFinanciera:"si",notes:"Quiere avanzar esta semana.",createdAt:now-1000*60*60*50,passedAt:null,resultado:"pendiente",comision:0},
+        {id:uid(),name:"Laura Sosa",phone:"11 4455-3300",vehicle:"Fiat Cronos 2020",platform:"marketplace",status:"pasado",dni:true,tieneVehiculo:"si",vehDetalle:"Fiat Palio 2012",monto:"$2.200.000",buscaFinanciacion:"no",necesitaFinanciera:"no",notes:"Cerró la operación en la concesionaria.",createdAt:now-1000*60*60*24*4,passedAt:now-1000*60*60*24*2,resultado:"cerrado",comision:45000,lastContactAt:now-1000*60*60*24*2}
+      ].map(function(l){ if(l.lastContactAt===undefined) l.lastContactAt=l.createdAt; return l; }),
+      posts:posts,
+      time:time,
+      timer:{running:false,startedAt:null},
+      templates:[
+        {id:uid(),title:"¿Sigue disponible?",text:"¡Hola! Sí, sigue disponible 👍 ¿Querés que te pase más fotos o coordinamos para que lo veas?"},
+        {id:uid(),title:"Consulta de financiación",text:"Hola! Sí, tenemos financiación disponible. Contame: ¿tenés DNI a mano y pensás entregar algún vehículo o hacer un pago inicial? Así te puedo dar precios más precisos."},
+        {id:uid(),title:"Toma de usado",text:"Sí, tomamos tu usado como parte de pago. Pasame marca, modelo, año y kilometraje y te confirmo la tasación estimada."},
+        {id:uid(),title:"Consulta de precio",text:"El precio de lista es [completar]. Puede variar según financiación o si entregás algún vehículo. ¿Seguimos por acá para avanzar?"},
+        {id:uid(),title:"Pedido de más info",text:"Te paso info: [marca/modelo/año/km/precio]. ¿Tenés DNI para consultar financiación y sabés si vas a entregar vehículo?"}
+      ],
+      bannerDismissed:false
+    };
+  }
+
+  var state;
+  var lastGenVariants=null;
+
+  function getApiKey(){ try{ return localStorage.getItem(AI_KEY_STORE)||""; }catch(e){ return ""; } }
+  function hasApiKey(){ return !!getApiKey().trim(); }
+  function saveApiKey(v){ try{ localStorage.setItem(AI_KEY_STORE, v); }catch(e){} }
+
+  function parseLenientJson(text){
+    try{ return JSON.parse(text); }catch(e){}
+    var fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if(fence){ try{ return JSON.parse(fence[1]); }catch(e){} }
+    var startCurly=text.indexOf("{"), startSquare=text.indexOf("[");
+    var start = (startCurly===-1) ? startSquare : (startSquare===-1 ? startCurly : Math.min(startCurly,startSquare));
+    var end = Math.max(text.lastIndexOf("}"), text.lastIndexOf("]"));
+    if(start>=0 && end>start){
+      try{ return JSON.parse(text.slice(start,end+1)); }catch(e){}
+    }
+    throw new Error("No se pudo interpretar la respuesta como JSON.");
+  }
+
+  function aiJson(prompt){
+    var key=getApiKey();
+    if(!key.trim() || !window.ai || !window.ai.json){
+      var err={code:"not_granted"};
+      return Promise.reject(err);
+    }
+    return window.ai.json(key,prompt).then(function(text){
+      return parseLenientJson(text);
+    }).catch(function(err){
+      var msg=(err && err.message) ? err.message : String(err);
+      var code="upstream_error";
+      if(/api key|unauthorized|401|invalid.*key/i.test(msg)) code="not_granted";
+      else if(/rate limit|429|too many/i.test(msg)) code="rate_limited";
+      else if(/interpretar la respuesta/i.test(msg)) code="invalid_json";
+      var e=new Error(msg); e.code=code;
+      throw e;
+    });
+  }
+
+  function load(){
+    try{
+      var raw=localStorage.getItem(STORE_KEY);
+      if(raw) state=JSON.parse(raw);
+      else state=defaultState();
+    }catch(e){ state=defaultState(); }
+  }
+  function save(){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  function ensureDay(map,key,fallback){ if(!map[key]) map[key]=fallback; return map[key]; }
+
+  // ---------- rendering ----------
+  var $ = function(id){return document.getElementById(id);};
+
+  function bandClass(value,min,max){
+    if(value>max) return "over";
+    if(value>=min) return "ingoal";
+    return "";
+  }
+
+  function renderTopbar(){
+    var opts={weekday:"long",day:"numeric",month:"long"};
+    var label=new Date().toLocaleDateString("es-AR",opts);
+    $("today-label").textContent=label.charAt(0).toUpperCase()+label.slice(1);
+    var t=$("timer-toggle");
+    t.classList.toggle("running",state.timer.running);
+    t.innerHTML = state.timer.running ? "&#10073;&#10073;" : "&#9654;";
+    var mins = todayMinutes();
+    $("timer-display").textContent = Math.floor(mins/60)+":"+pad(Math.round(mins%60));
+  }
+
+  function todayMinutes(){
+    var base = state.time[todayKey()]||0;
+    if(state.timer.running && state.timer.startedAt){
+      base += (Date.now()-state.timer.startedAt)/60000;
+    }
+    return base;
+  }
+
+  function renderHoy(){
+    $("demo-banner").hidden = !state.demo || state.bannerDismissed;
+    var day = ensureDay(state.posts, todayKey(), {marketplace:0,grupos:0,redes:0});
+    var total = (day.marketplace||0)+(day.grupos||0)+(day.redes||0);
+    $("posts-total").innerHTML = total+" <small>/ 15–20</small>";
+    var pct = Math.min(100, total/POSTS_MAX*100);
+    var pbar=$("posts-bar");
+    pbar.className="bar "+bandClass(total,POSTS_MIN,POSTS_MAX);
+    pbar.firstElementChild.style.width=pct+"%";
+    document.querySelectorAll(".counter").forEach(function(c){
+      var p=c.getAttribute("data-platform");
+      c.querySelector("[data-count]").textContent = day[p]||0;
+    });
+
+    var mins=todayMinutes();
+    var hh=Math.floor(mins/60), mm=Math.round(mins%60);
+    $("time-total").innerHTML = hh+":"+pad(mm)+" <small>/ 2–3 h</small>";
+    var tpct=Math.min(100, mins/MAX_MIN*100);
+    var tbar=$("time-bar");
+    tbar.className="bar "+bandClass(mins,MIN_MIN,MAX_MIN);
+    tbar.firstElementChild.style.width=tpct+"%";
+
+    var todo = state.leads.filter(function(l){
+      return ["nuevo","contactado","filtrando"].indexOf(l.status)>=0;
+    }).sort(function(a,b){return a.createdAt-b.createdAt;});
+    var list=$("todo-list");
+    list.innerHTML="";
+    if(!todo.length){
+      list.innerHTML='<div class="empty">No tenés leads pendientes de filtrar. ¡Buen trabajo!</div>';
+    }
+    todo.forEach(function(l){
+      var div=document.createElement("div");
+      div.className="todoitem";
+      div.setAttribute("data-lead",l.id);
+      div.innerHTML = '<div style="flex:1;"><div class="name">'+escapeHtml(l.name||"Sin nombre")+'</div>'+
+        '<div class="meta">'+escapeHtml(l.vehicle||"")+' · '+leadCompleteness(l)+'/5 datos</div></div>'+
+        '<span class="chip '+l.status+'">'+STATUS_LABELS[l.status]+'</span>';
+      list.appendChild(div);
+    });
+
+    renderAlerts();
+  }
+
+  function renderAlerts(){
+    var active=state.leads.filter(function(l){return l.status!=="pasado" && l.status!=="perdido";});
+    var withBadge=active.map(function(l){return {l:l,b:contactBadge(l)};}).filter(function(x){return x.b && x.b.minutes>=15;});
+    withBadge.sort(function(a,b){return b.b.minutes-a.b.minutes;});
+    var list=$("alerts-list");
+    list.innerHTML="";
+    if(!withBadge.length){
+      list.innerHTML='<div class="empty">Estás al día con todos tus leads activos.</div>';
+      return;
+    }
+    withBadge.forEach(function(x){
+      var l=x.l, b=x.b;
+      var mm = b.minutes>=1440 ? Math.round(b.minutes/60)+"h sin responder" : Math.round(b.minutes)+" min sin responder";
+      var div=document.createElement("div");
+      div.className="todoitem";
+      div.setAttribute("data-lead",l.id);
+      div.innerHTML = '<div style="flex:1;"><div class="name">'+escapeHtml(l.name||"Sin nombre")+'</div>'+
+        '<div class="meta">'+mm+'</div></div>'+
+        '<button class="quickmark" data-markcontact="'+l.id+'" title="Marcar que ya respondiste">&#10003;</button>'+
+        '<span class="chip '+b.cls+'">'+b.label+'</span>';
+      list.appendChild(div);
+    });
+  }
+
+  function leadCompleteness(l){
+    var n=0;
+    if(l.dni) n++;
+    if(l.tieneVehiculo && l.tieneVehiculo!=="sin-consultar") n++;
+    if(l.monto && l.monto.trim()!=="") n++;
+    if(l.buscaFinanciacion && l.buscaFinanciacion!=="sin-consultar") n++;
+    if(l.necesitaFinanciera && l.necesitaFinanciera!=="sin-consultar") n++;
+    return n;
+  }
+
+  var URGENT_WORDS=["hoy","urgente","ya tiene","confirmame","confirmo","quiere verlo","tiene la plata","efectivo","seña","cuanto antes","ahora mismo"];
+  function leadScore(l){
+    var comp=leadCompleteness(l);
+    var score=comp*15;
+    var text=((l.notes||"")+" ").toLowerCase();
+    var hits=0;
+    URGENT_WORDS.forEach(function(w){ if(text.indexOf(w)>=0) hits++; });
+    score+=Math.min(25,hits*8);
+    return Math.max(0,Math.min(100,Math.round(score)));
+  }
+  function scoreLabel(s){
+    if(s>=70) return {cls:"hot",label:"🔥 Caliente"};
+    if(s>=40) return {cls:"warm",label:"🌤 Tibio"};
+    return {cls:"cold",label:"❄️ Frío"};
+  }
+  function minutesSince(ts){ return ts?(Date.now()-ts)/60000:Infinity; }
+  function contactBadge(l){
+    if(l.status==="pasado"||l.status==="perdido") return null;
+    var m=minutesSince(l.lastContactAt||l.createdAt);
+    if(m<15) return {cls:"sla-good",label:"Al día",minutes:m};
+    if(m<60) return {cls:"sla-warn",label:"Respondé pronto",minutes:m};
+    return {cls:"sla-bad",label:"¡Respondé ya!",minutes:m};
+  }
+
+  function escapeHtml(s){
+    return (s||"").replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  var currentFilter="todos";
+  var currentSort="recientes";
+  function renderStatusFilters(){
+    var row=$("status-filters");
+    var opts=[["todos","Todos"],["nuevo","Nuevo"],["contactado","Contactado"],["filtrando","Filtrando"],["calificado","Calificado"],["pasado","Pasado"],["perdido","Perdido"]];
+    row.innerHTML="";
+    opts.forEach(function(o){
+      var b=document.createElement("button");
+      b.textContent=o[1];
+      b.setAttribute("data-filter",o[0]);
+      if(o[0]===currentFilter) b.classList.add("active");
+      row.appendChild(b);
+    });
+  }
+
+  function renderLeads(){
+    renderStatusFilters();
+    $("sort-toggle").textContent = "Ordenar: "+(currentSort==="recientes"?"Más recientes":"Más calientes");
+    var list=$("leads-list");
+    list.innerHTML="";
+    var leads=state.leads.slice();
+    if(currentSort==="calientes"){
+      leads.sort(function(a,b){ return leadScore(b)-leadScore(a) || b.createdAt-a.createdAt; });
+    } else {
+      leads.sort(function(a,b){return b.createdAt-a.createdAt;});
+    }
+    if(currentFilter!=="todos") leads=leads.filter(function(l){return l.status===currentFilter;});
+    if(!leads.length){
+      list.innerHTML='<div class="empty">No hay leads en este estado.</div>';
+      return;
+    }
+    leads.forEach(function(l){
+      var comp=leadCompleteness(l);
+      var dots="";
+      for(var i=0;i<5;i++){ dots+='<span class="dot'+(i<comp?" on":"")+'"></span>'; }
+      var sc=scoreLabel(leadScore(l));
+      var badge=contactBadge(l);
+      var card=document.createElement("div");
+      card.className="leadcard";
+      card.setAttribute("data-lead",l.id);
+      card.innerHTML =
+        '<div class="top"><div><div class="name">'+escapeHtml(l.name||"Sin nombre")+'</div>'+
+        '<div class="veh">'+escapeHtml(l.vehicle||"")+' · '+PLATFORM_LABELS[l.platform]+'</div></div>'+
+        '<div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">'+
+        '<span class="chip '+l.status+'">'+STATUS_LABELS[l.status]+'</span>'+
+        (l.status!=="pasado"&&l.status!=="perdido" ? '<span class="scorebadge '+sc.cls+'">'+sc.label+'</span>' : '')+
+        '</div></div>'+
+        '<div class="bottom"><div class="dots">'+dots+'</div>'+
+        '<div style="display:flex; align-items:center; gap:8px;">'+
+        (badge && badge.minutes>=15 ? '<button class="quickmark" data-markcontact="'+l.id+'" title="Marcar que ya respondiste">&#10003;</button><span class="chip '+badge.cls+'">'+badge.label+'</span>' : '')+
+        '<span style="font-size:11px;color:var(--text-muted);">'+comp+'/5 datos</span>'+
+        '</div></div>';
+      list.appendChild(card);
+    });
+  }
+
+  function renderTemplates(){
+    var list=$("tpl-list");
+    list.innerHTML="";
+    state.templates.forEach(function(t){
+      var card=document.createElement("div");
+      card.className="tplcard";
+      card.innerHTML = '<h3>'+escapeHtml(t.title)+'</h3><p>'+escapeHtml(t.text)+'</p>'+
+        '<button class="copybtn" data-copy="'+t.id+'">Copiar</button> '+
+        '<button class="copybtn" data-deltpl="'+t.id+'" style="background:var(--bad-soft);color:var(--bad);">Eliminar</button>';
+      list.appendChild(card);
+    });
+  }
+
+  function renderSemana(){
+    var wk=weekKeys();
+    var first=new Date(wk[0]+"T00:00:00"), last=new Date(wk[6]+"T00:00:00");
+    var opts={day:"numeric",month:"long"};
+    $("week-range").textContent = "Semana del "+first.toLocaleDateString("es-AR",{day:"numeric"})+" al "+last.toLocaleDateString("es-AR",opts);
+
+    var postsPerDay = wk.map(function(k){ var d=state.posts[k]; return d?(d.marketplace||0)+(d.grupos||0)+(d.redes||0):0; });
+    var maxVal = Math.max(POSTS_MAX, Math.max.apply(null,postsPerDay));
+    var chart=$("week-chart");
+    chart.innerHTML="";
+    var bandTop=(1-POSTS_MAX/maxVal)*100, bandH=(POSTS_MAX-POSTS_MIN)/maxVal*100;
+    var todayIdx=(new Date().getDay()+6)%7;
+    postsPerDay.forEach(function(v,i){
+      var col=document.createElement("div");
+      col.className="chartbar";
+      var h=Math.max(2, v/maxVal*100);
+      col.innerHTML =
+        '<div class="track">'+
+          '<div class="band" style="top:'+bandTop+'%; height:'+bandH+'%"></div>'+
+          '<div class="tooltip">'+v+' pub.</div>'+
+          '<div class="fill'+(i===todayIdx?" today":"")+'" style="height:'+h+'%"></div>'+
+        '</div>'+
+        '<div class="dlabel">'+DAY_LABELS[i]+'</div>';
+      chart.appendChild(col);
+    });
+
+    var totalPosts=postsPerDay.reduce(function(a,b){return a+b;},0);
+    $("week-posts-total").innerHTML = totalPosts+" <small>/ 105–140</small>";
+    var pbar=$("week-posts-bar");
+    pbar.className="bar "+bandClass(totalPosts,WEEK_POSTS_MIN,WEEK_POSTS_MAX);
+    pbar.firstElementChild.style.width=Math.min(100,totalPosts/WEEK_POSTS_MAX*100)+"%";
+
+    var totalMin=wk.reduce(function(a,k){return a+(state.time[k]||0);},0) + (state.timer.running?(Date.now()-state.timer.startedAt)/60000:0);
+    $("week-time-total").innerHTML = (totalMin/60).toFixed(1)+"h <small>/ 14–21 h</small>";
+    var tbar=$("week-time-bar");
+    tbar.className="bar "+bandClass(totalMin,WEEK_MIN_MIN,WEEK_MAX_MIN);
+    tbar.firstElementChild.style.width=Math.min(100,totalMin/WEEK_MAX_MIN*100)+"%";
+
+    var weekStartTs=first.getTime(), weekEndTs=last.getTime()+86400000;
+    var commission = state.leads.filter(function(l){
+      return l.resultado==="cerrado" && l.passedAt && l.passedAt>=weekStartTs && l.passedAt<weekEndTs;
+    }).reduce(function(a,l){return a+(Number(l.comision)||0);},0);
+    $("week-commission-total").innerHTML = money(commission)+" <small>/ "+money(COMM_MIN)+"–"+money(COMM_MAX)+"</small>";
+    var cbar=$("week-commission-bar");
+    cbar.className="bar "+bandClass(commission,COMM_MIN,COMM_MAX);
+    cbar.firstElementChild.style.width=Math.min(100,commission/COMM_MAX*100)+"%";
+
+    var funnel=$("funnel-grid");
+    funnel.innerHTML="";
+    Object.keys(STATUS_LABELS).forEach(function(s){
+      var n=state.leads.filter(function(l){return l.status===s;}).length;
+      var d=document.createElement("div");
+      d.className="stat";
+      d.innerHTML='<div class="n">'+n+'</div><div class="l">'+STATUS_LABELS[s]+'</div>';
+      funnel.appendChild(d);
+    });
+  }
+
+  function renderAll(){
+    renderTopbar();
+    renderHoy();
+    renderLeads();
+    renderTemplates();
+    renderSemana();
+  }
+
+  // ---------- tabs ----------
+  document.querySelectorAll(".bottomnav button").forEach(function(b){
+    b.addEventListener("click",function(){
+      document.querySelectorAll(".bottomnav button").forEach(function(x){x.classList.remove("active");});
+      b.classList.add("active");
+      document.querySelectorAll(".tab").forEach(function(t){t.hidden=true;});
+      $("tab-"+b.getAttribute("data-tab")).hidden=false;
+      $("fab-add-lead").style.display = (b.getAttribute("data-tab")==="hoy"||b.getAttribute("data-tab")==="leads") ? "flex" : "none";
+    });
+  });
+
+  // ---------- timer ----------
+  $("timer-toggle").addEventListener("click",function(){
+    if(state.timer.running){
+      var elapsed=(Date.now()-state.timer.startedAt)/60000;
+      state.time[todayKey()] = (state.time[todayKey()]||0) + elapsed;
+      state.timer.running=false; state.timer.startedAt=null;
+    } else {
+      state.timer.running=true; state.timer.startedAt=Date.now();
+    }
+    save(); renderTopbar(); renderHoy();
+  });
+  setInterval(function(){
+    if(state.timer.running){
+      var now=Date.now();
+      var elapsed=(now-state.timer.startedAt)/60000;
+      if(elapsed>0.15){
+        state.time[todayKey()] = (state.time[todayKey()]||0) + elapsed;
+        state.timer.startedAt=now;
+        save();
+      }
+      renderTopbar(); renderHoy();
+    }
+  },1000);
+  window.addEventListener("beforeunload",function(){
+    if(state.timer.running){
+      var elapsed=(Date.now()-state.timer.startedAt)/60000;
+      state.time[todayKey()] = (state.time[todayKey()]||0) + elapsed;
+      state.timer.startedAt=Date.now();
+      save();
+    }
+  });
+
+  // ---------- posts counters ----------
+  document.querySelectorAll(".counter .stepbtn").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var counter=btn.closest(".counter");
+      var p=counter.getAttribute("data-platform");
+      var step=parseInt(btn.getAttribute("data-step"),10);
+      var day=ensureDay(state.posts, todayKey(), {marketplace:0,grupos:0,redes:0});
+      day[p]=Math.max(0,(day[p]||0)+step);
+      save(); renderHoy(); renderSemana();
+    });
+  });
+
+  // ---------- banner ----------
+  $("dismiss-banner").addEventListener("click",function(){
+    state.bannerDismissed=true; save(); renderHoy();
+  });
+
+  // ---------- lead overlay ----------
+  var editingId=null;
+  function openLeadOverlay(id){
+    editingId=id;
+    var l = id ? state.leads.find(function(x){return x.id===id;}) : null;
+    $("overlay-title").textContent = l ? "Editar lead" : "Nuevo lead";
+    $("f-name").value = l?l.name:"";
+    $("f-phone").value = l?l.phone:"";
+    $("f-vehicle").value = l?l.vehicle:"";
+    $("f-platform").value = l?l.platform:"marketplace";
+    $("f-status").value = l?l.status:"nuevo";
+    $("f-dni").checked = l?!!l.dni:false;
+    $("f-tienevehiculo").value = l?l.tieneVehiculo:"sin-consultar";
+    $("f-vehdetalle").value = l?l.vehDetalle:"";
+    $("f-monto").value = l?l.monto:"";
+    $("f-financiacion").value = l?l.buscaFinanciacion:"sin-consultar";
+    $("f-financiera").value = l?l.necesitaFinanciera:"sin-consultar";
+    $("f-notes").value = l?l.notes:"";
+    $("f-resultado").value = l?(l.resultado||"pendiente"):"pendiente";
+    $("f-comision").value = l&&l.comision?l.comision:"";
+    $("delete-lead-btn").style.display = l?"block":"none";
+    $("pass-lead-btn").style.display = (l && l.status!=="pasado" && l.status!=="perdido") ? "block":"none";
+    $("f-chatpaste").value="";
+    $("chat-ai-status").textContent = hasApiKey() ? "" : "Configurá tu API key de DeepSeek en Herramientas → Ajustes de IA.";
+    updateOverlayConditionals();
+    $("lead-overlay").hidden=false;
+  }
+  function updateOverlayConditionals(){
+    $("f-vehdetalle-wrap").hidden = $("f-tienevehiculo").value!=="si";
+    var l = editingId ? state.leads.find(function(x){return x.id===editingId;}) : null;
+    $("f-resultado-wrap").hidden = !(l && l.status==="pasado") && $("f-status").value!=="pasado";
+    $("f-comision-wrap").hidden = $("f-resultado").value!=="cerrado";
+    var comp=0;
+    if($("f-dni").checked) comp++;
+    if($("f-tienevehiculo").value!=="sin-consultar") comp++;
+    if($("f-monto").value.trim()!=="") comp++;
+    if($("f-financiacion").value!=="sin-consultar") comp++;
+    if($("f-financiera").value!=="sin-consultar") comp++;
+    $("completeness-pill").textContent=comp+"/5";
+  }
+  ["f-tienevehiculo","f-status","f-resultado","f-dni","f-monto","f-financiacion","f-financiera"].forEach(function(id){
+    $(id).addEventListener("input",updateOverlayConditionals);
+    $(id).addEventListener("change",updateOverlayConditionals);
+  });
+
+  function readForm(){
+    return {
+      name:$("f-name").value.trim(),
+      phone:$("f-phone").value.trim(),
+      vehicle:$("f-vehicle").value.trim(),
+      platform:$("f-platform").value,
+      status:$("f-status").value,
+      dni:$("f-dni").checked,
+      tieneVehiculo:$("f-tienevehiculo").value,
+      vehDetalle:$("f-vehdetalle").value.trim(),
+      monto:$("f-monto").value.trim(),
+      buscaFinanciacion:$("f-financiacion").value,
+      necesitaFinanciera:$("f-financiera").value,
+      notes:$("f-notes").value.trim(),
+      resultado:$("f-resultado").value,
+      comision:Number($("f-comision").value)||0
+    };
+  }
+
+  $("fab-add-lead").addEventListener("click",function(){ openLeadOverlay(null); });
+  $("overlay-close").addEventListener("click",function(){ $("lead-overlay").hidden=true; });
+
+  $("save-lead-btn").addEventListener("click",function(){
+    var data=readForm();
+    if(!data.name){ $("f-name").focus(); return; }
+    data.lastContactAt=Date.now();
+    if(editingId){
+      var l=state.leads.find(function(x){return x.id===editingId;});
+      Object.assign(l,data);
+    } else {
+      data.id=uid(); data.createdAt=Date.now(); data.passedAt=null;
+      state.leads.push(data);
+    }
+    state.demo=false;
+    save(); $("lead-overlay").hidden=true; renderAll();
+  });
+
+  $("pass-lead-btn").addEventListener("click",function(){
+    var data=readForm();
+    data.status="pasado";
+    data.lastContactAt=Date.now();
+    if(editingId){
+      var l=state.leads.find(function(x){return x.id===editingId;});
+      Object.assign(l,data); l.passedAt=Date.now();
+    } else {
+      data.id=uid(); data.createdAt=Date.now(); data.passedAt=Date.now();
+      state.leads.push(data);
+    }
+    state.demo=false;
+    save(); $("lead-overlay").hidden=true; renderAll();
+  });
+
+  $("analyze-chat-btn").addEventListener("click",function(){
+    var raw=$("f-chatpaste").value.trim();
+    if(!raw){ $("chat-ai-status").textContent="Pegá primero la conversación."; return; }
+    if(!hasApiKey()){ $("chat-ai-status").textContent="Configurá tu API key de DeepSeek en Herramientas → Ajustes de IA."; return; }
+    var btn=this;
+    btn.disabled=true;
+    $("chat-ai-status").textContent="Analizando conversación...";
+    var prompt =
+      "Sos un asistente para un datero que filtra clientes por WhatsApp para una concesionaria de autos y motos. "+
+      "Te paso una conversación pegada tal cual con un cliente interesado en un vehículo. "+
+      "Extraé SOLO lo que la conversación diga explícitamente, sin inventar nada que no esté escrito. "+
+      "Respondé ÚNICAMENTE con un JSON con esta forma exacta, sin texto antes ni después:\n"+
+      '{"nombre": string|null, "vehiculoInteres": string|null, "dni": boolean, '+
+      '"tieneVehiculo": "si"|"no"|"sin-consultar", "vehDetalle": string|null, '+
+      '"monto": string|null, "buscaFinanciacion": "si"|"no"|"sin-consultar", '+
+      '"necesitaFinanciera": "si"|"no"|"sin-consultar", "urgente": boolean, "resumen": string}\n'+
+      '"dni" es true solo si el cliente dice que tiene o va a mandar el DNI. '+
+      '"urgente" es true si el cliente muestra apuro real por cerrar (por ejemplo dice que quiere verlo hoy o que ya tiene la plata lista). '+
+      '"resumen" es un resumen de una o dos frases en español, para dejar como nota interna.\n\n'+
+      "Conversación:\n"+raw.slice(0,6000);
+    aiJson(prompt).then(function(data){
+      data=data||{};
+      if(data.nombre && !$("f-name").value.trim()) $("f-name").value=data.nombre;
+      if(data.vehiculoInteres && !$("f-vehicle").value.trim()) $("f-vehicle").value=data.vehiculoInteres;
+      if(data.dni) $("f-dni").checked=true;
+      if(data.tieneVehiculo && data.tieneVehiculo!=="sin-consultar") $("f-tienevehiculo").value=data.tieneVehiculo;
+      if(data.vehDetalle) $("f-vehdetalle").value=data.vehDetalle;
+      if(data.monto) $("f-monto").value=data.monto;
+      if(data.buscaFinanciacion && data.buscaFinanciacion!=="sin-consultar") $("f-financiacion").value=data.buscaFinanciacion;
+      if(data.necesitaFinanciera && data.necesitaFinanciera!=="sin-consultar") $("f-financiera").value=data.necesitaFinanciera;
+      var existingNotes=$("f-notes").value.trim();
+      var addition=(data.resumen?("Resumen IA: "+data.resumen):"")+(data.urgente?" ⚠ Cliente muestra urgencia.":"");
+      $("f-notes").value=(existingNotes?existingNotes+"\n\n":"")+addition+"\n\n--- Chat pegado ---\n"+raw;
+      updateOverlayConditionals();
+      $("chat-ai-status").textContent="Listo. Revisá los datos completados antes de guardar.";
+    }).catch(function(e){
+      var msg="No se pudo analizar la conversación.";
+      if(e && e.code==="not_granted") msg="La API key de DeepSeek no está configurada o no es válida.";
+      else if(e && e.code==="rate_limited") msg="Demasiadas consultas por ahora, probá de nuevo en un rato.";
+      else if(e && e.code==="invalid_json") msg="La IA no devolvió datos entendibles. Probá 'Usar como nota sin analizar'.";
+      else if(e && e.message) msg=e.message;
+      $("chat-ai-status").textContent=msg;
+    }).finally(function(){ btn.disabled=false; });
+  });
+
+  $("use-raw-chat-btn").addEventListener("click",function(){
+    var raw=$("f-chatpaste").value.trim();
+    if(!raw){ $("chat-ai-status").textContent="Pegá primero la conversación."; return; }
+    var existingNotes=$("f-notes").value.trim();
+    $("f-notes").value=(existingNotes?existingNotes+"\n\n":"")+"--- Chat pegado ---\n"+raw;
+    $("chat-ai-status").textContent="Chat agregado a las notas.";
+  });
+
+  var deleteArmed=false;
+  $("delete-lead-btn").addEventListener("click",function(){
+    if(!deleteArmed){
+      deleteArmed=true;
+      this.textContent="¿Seguro? Tocá de nuevo para borrar";
+      setTimeout(function(){ deleteArmed=false; },3000);
+      var self=this;
+      setTimeout(function(){ if(deleteArmed===false) self.textContent="Eliminar lead"; },3000);
+      return;
+    }
+    state.leads=state.leads.filter(function(x){return x.id!==editingId;});
+    deleteArmed=false;
+    $("delete-lead-btn").textContent="Eliminar lead";
+    save(); $("lead-overlay").hidden=true; renderAll();
+  });
+
+  document.addEventListener("click",function(e){
+    var markBtn=e.target.closest("[data-markcontact]");
+    if(markBtn){
+      var mid=markBtn.getAttribute("data-markcontact");
+      var ml=state.leads.find(function(x){return x.id===mid;});
+      if(ml){ ml.lastContactAt=Date.now(); save(); renderAll(); }
+      return;
+    }
+    var card=e.target.closest("[data-lead]");
+    if(card){ openLeadOverlay(card.getAttribute("data-lead")); return; }
+    var f=e.target.closest("#status-filters button");
+    if(f){ currentFilter=f.getAttribute("data-filter"); renderLeads(); return; }
+    var copyBtn=e.target.closest("[data-copy]");
+    if(copyBtn){
+      var tpl=state.templates.find(function(t){return t.id===copyBtn.getAttribute("data-copy");});
+      if(tpl) doCopy(tpl.text,copyBtn);
+      return;
+    }
+    var genCopy=e.target.closest("[data-copygen]");
+    if(genCopy){
+      var gidx=parseInt(genCopy.getAttribute("data-copygen"),10);
+      var gtext=(lastGenVariants||[])[gidx];
+      if(gtext!=null) doCopy(gtext,genCopy);
+      return;
+    }
+    var delTpl=e.target.closest("[data-deltpl]");
+    if(delTpl){
+      state.templates=state.templates.filter(function(t){return t.id!==delTpl.getAttribute("data-deltpl");});
+      save(); renderTemplates();
+      return;
+    }
+  });
+
+  function doCopy(text,btn){
+    var done=function(){
+      var orig=btn.getAttribute("data-label")||"Copiar";
+      btn.textContent="¡Copiado!"; btn.classList.add("done");
+      setTimeout(function(){ btn.textContent=orig; btn.classList.remove("done"); },1600);
+    };
+    if(!btn.getAttribute("data-label")) btn.setAttribute("data-label",btn.textContent);
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+    } else { fallbackCopy(text); done(); }
+  }
+
+  function fallbackCopy(text){
+    var ta=document.createElement("textarea");
+    ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  $("add-tpl-btn").addEventListener("click",function(){
+    $("ntpl-title").value=""; $("ntpl-text").value="";
+    $("new-tpl-form").hidden=false;
+    $("ntpl-title").focus();
+  });
+  $("ntpl-cancel").addEventListener("click",function(){
+    $("new-tpl-form").hidden=true;
+  });
+  $("ntpl-save").addEventListener("click",function(){
+    var title=$("ntpl-title").value.trim();
+    var text=$("ntpl-text").value.trim();
+    if(!title || !text){ return; }
+    state.templates.push({id:uid(),title:title,text:text});
+    save(); renderTemplates();
+    $("new-tpl-form").hidden=true;
+  });
+
+  $("sort-toggle").addEventListener("click",function(){
+    currentSort = currentSort==="recientes" ? "calientes" : "recientes";
+    renderLeads();
+  });
+
+  $("ai-key-input").value=getApiKey();
+  $("ai-key-save").addEventListener("click",function(){
+    var v=$("ai-key-input").value.trim();
+    saveApiKey(v);
+    $("ai-key-status").textContent = v ? "Guardada. Ya podés usar las funciones de IA." : "Key borrada.";
+  });
+  $("ai-key-test").addEventListener("click",function(){
+    if(!$("ai-key-input").value.trim()){ $("ai-key-status").textContent="Pegá una key primero."; return; }
+    saveApiKey($("ai-key-input").value.trim());
+    var btn=this;
+    btn.disabled=true;
+    $("ai-key-status").textContent="Probando...";
+    aiJson('Respondé únicamente con este JSON, sin texto antes ni después: {"ok": true}').then(function(){
+      $("ai-key-status").textContent="Conexión OK.";
+    }).catch(function(e){
+      var msg="No se pudo conectar.";
+      if(e && e.code==="not_granted") msg="La key parece inválida, vacía o sin crédito.";
+      else if(e && e.code==="rate_limited") msg="Demasiadas consultas, probá en un rato.";
+      else if(e && e.message) msg=e.message;
+      $("ai-key-status").textContent=msg;
+    }).finally(function(){ btn.disabled=false; });
+  });
+
+  $("gen-btn").addEventListener("click",function(){
+    var vehiculo=$("gen-vehiculo").value.trim();
+    var km=$("gen-km").value.trim();
+    var precio=$("gen-precio").value.trim();
+    var extra=$("gen-extra").value.trim();
+    if(!vehiculo || !precio){ $("tplgen-status").textContent="Completá al menos vehículo y precio."; return; }
+    if(!hasApiKey()){ $("tplgen-status").textContent="Configurá tu API key de DeepSeek en Ajustes de IA."; return; }
+    var btn=this;
+    btn.disabled=true;
+    $("tplgen-status").textContent="Generando...";
+    $("gen-results").innerHTML="";
+    var prompt =
+      "Sos un datero que publica autos y motos usados en Marketplace y grupos de Facebook en Argentina. "+
+      "Escribí 3 variantes de texto para publicar este vehículo, cada una con un enfoque distinto "+
+      "(una directa con precio y datos concretos, una con gancho de urgencia, una más cercana/aspiracional). "+
+      "Español rioplatense, tono creíble y cercano, sin mayúsculas de grito ni signos de exclamación de más, "+
+      "de 3 a 5 líneas cada una, terminando con una llamada a escribir por WhatsApp. No inventes datos que no te di.\n\n"+
+      "Vehículo: "+vehiculo+"\nKilometraje: "+(km||"no especificado")+"\nPrecio: "+precio+"\nDetalles extra: "+(extra||"ninguno")+"\n\n"+
+      'Respondé ÚNICAMENTE con este JSON, sin texto antes ni después: {"variantes": [string, string, string]}';
+    aiJson(prompt).then(function(data){
+      var variantes=(data && Array.isArray(data.variantes)) ? data.variantes : [];
+      if(!variantes.length){
+        $("tplgen-status").textContent="No se generó ningún texto, probá de nuevo.";
+        return;
+      }
+      lastGenVariants=variantes;
+      $("tplgen-status").textContent="Listo. Tocá copiar y pegalo en Marketplace o en el grupo.";
+      variantes.forEach(function(v,i){
+        var card=document.createElement("div");
+        card.className="tplcard";
+        card.innerHTML='<h3>Variante '+(i+1)+'</h3><p>'+escapeHtml(v)+'</p><button class="copybtn" data-copygen="'+i+'">Copiar</button>';
+        $("gen-results").appendChild(card);
+      });
+    }).catch(function(e){
+      var msg="No se pudo generar el texto.";
+      if(e && e.code==="not_granted") msg="La API key de DeepSeek no está configurada o no es válida.";
+      else if(e && e.code==="rate_limited") msg="Demasiadas consultas, probá en un rato.";
+      else if(e && e.message) msg=e.message;
+      $("tplgen-status").textContent=msg;
+    }).finally(function(){ btn.disabled=false; });
+  });
+
+  function computeCuota(){
+    var precio=Number($("calc-precio").value);
+    var entrega=Number($("calc-entrega").value)||0;
+    var plazo=Number($("calc-plazo").value);
+    var tasa=Number($("calc-tasa").value);
+    if(!precio || !plazo || !tasa){
+      $("calc-result").innerHTML="—";
+      $("calc-caption").textContent="Completá precio, plazo y tasa para ver una estimación.";
+      return;
+    }
+    var monto=Math.max(0,precio-entrega);
+    var rMensual=(tasa/100)/12;
+    var cuota;
+    if(rMensual>0){
+      cuota = monto * rMensual * Math.pow(1+rMensual,plazo) / (Math.pow(1+rMensual,plazo)-1);
+    } else {
+      cuota = monto/plazo;
+    }
+    $("calc-result").innerHTML = money(Math.round(cuota))+" <small>por mes</small>";
+    $("calc-caption").textContent = "Financiando "+money(monto)+" en "+plazo+" cuotas — estimación, no un valor final.";
+  }
+  ["calc-precio","calc-entrega","calc-plazo","calc-tasa"].forEach(function(id){
+    $(id).addEventListener("input",computeCuota);
+  });
+
+  var resetArmed=false;
+  $("reset-btn").addEventListener("click",function(){
+    if(!resetArmed){
+      resetArmed=true;
+      this.textContent="¿Seguro? Tocá de nuevo para borrar todo";
+      setTimeout(function(){ resetArmed=false; $("reset-btn").textContent="Borrar todo y empezar de cero"; },3000);
+      return;
+    }
+    state = defaultState();
+    state.demo=false;
+    state.leads=[]; state.posts={}; state.time={};
+    resetArmed=false;
+    save(); renderAll();
+  });
+
+  load();
+  renderAll();
+  setInterval(function(){ if(!$("tab-hoy").hidden) renderAlerts(); },30000);
+})();
+</script>
+</body>
+</html>
