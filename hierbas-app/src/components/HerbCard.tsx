@@ -1,10 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Link } from 'expo-router';
 import { Herb } from '../types';
+import { getKind } from '../data/herbs';
 import { colors, categoryLabels } from '../theme/colors';
 import { Chip } from './Chip';
 import { FavoriteStar } from './FavoriteStar';
 import { TraditionBadges } from './TraditionBadges';
+import { KindBadge } from './KindBadge';
 import { useAppData } from '../context/AppDataContext';
 
 export function HerbCard({ herb }: { herb: Herb }) {
@@ -18,6 +20,7 @@ export function HerbCard({ herb }: { herb: Herb }) {
             <Text style={styles.name}>{herb.name}</Text>
             <Text style={styles.scientific}>{herb.scientificName}</Text>
             <View style={styles.badgesRow}>
+              <KindBadge kind={getKind(herb)} />
               <TraditionBadges tradition={herb.tradition} />
             </View>
           </View>
@@ -71,6 +74,8 @@ const styles = StyleSheet.create({
   },
   badgesRow: {
     marginTop: 6,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   chipsRow: {
     flexDirection: 'row',

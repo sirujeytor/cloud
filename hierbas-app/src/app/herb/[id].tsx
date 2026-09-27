@@ -1,11 +1,12 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { getHerbById } from '../../data/herbs';
+import { getHerbById, getKind } from '../../data/herbs';
 import { colors, categoryLabels } from '../../theme/colors';
 import { Chip } from '../../components/Chip';
 import { Disclaimer } from '../../components/Disclaimer';
 import { FavoriteStar } from '../../components/FavoriteStar';
 import { TraditionBadges } from '../../components/TraditionBadges';
+import { KindBadge } from '../../components/KindBadge';
 import { useAppData } from '../../context/AppDataContext';
 
 export default function HerbDetailScreen() {
@@ -35,6 +36,7 @@ export default function HerbDetailScreen() {
         )}
 
         <View style={styles.traditionBadgesWrap}>
+          <KindBadge kind={getKind(herb)} size="large" />
           <TraditionBadges tradition={herb.tradition} size="large" />
         </View>
 
@@ -145,6 +147,8 @@ const styles = StyleSheet.create({
   },
   traditionBadgesWrap: {
     marginTop: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   chipsRow: {
     flexDirection: 'row',

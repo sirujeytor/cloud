@@ -1,4 +1,4 @@
-import { Tradition } from '../types';
+import { Kind, Tradition } from '../types';
 
 export const colors = {
   background: '#F7F3E9',
@@ -52,4 +52,16 @@ export const traditionBadgeColors: Record<Tradition, string> = {
   ayurveda: '#B8621B',
   precolombina: '#B5533C',
   africana: '#2C6E8C',
+};
+
+export const kindLabels: Record<Kind, string> = {
+  hierba: 'Hierba',
+  fruta: 'Fruta',
+  verdura: 'Verdura',
+};
+
+export const kindBadgeColors: Record<Kind, string> = {
+  hierba: colors.primary,
+  fruta: '#C4433C',
+  verdura: '#5B8A3A',
 };

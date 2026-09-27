@@ -16,23 +16,29 @@ combinando cinco tradiciones de herboristería:
   kanna, etc.), incluidas algunas con implicancias de seguridad importantes (kratom, hipérico)
   investigadas y documentadas con advertencias específicas.
 
-En total, 109 hierbas. Este contenido es de carácter tradicional y educativo, no reemplaza el
-consejo médico. Cada pantalla incluye un recordatorio de esto, y las hierbas con riesgos conocidos
-(interacciones medicamentosas, toxicidad, embarazo) tienen contraindicaciones explícitas y
-reforzadas.
+Además de hierbas, el catálogo incluye **frutas y verduras** que también se usan en infusión
+(cáscaras de cítricos, rosa mosqueta, hibisco, arándanos, hojas de vid roja y de olivo, alcachofa,
+apio, remolacha, etc.), para armar combinaciones más grandes y variadas.
+
+En total, 134 ingredientes (109 hierbas + 25 frutas/verduras). Este contenido es de carácter
+tradicional y educativo, no reemplaza el consejo médico. Cada pantalla incluye un recordatorio de
+esto, y los ingredientes con riesgos conocidos (interacciones medicamentosas, toxicidad, embarazo)
+tienen contraindicaciones explícitas y reforzadas — por ejemplo, el pomelo y sus interacciones
+medicamentosas, o las hojas de durazno y su contenido de compuestos cianogénicos.
 
 ## Funcionalidad
 
-- **Hierbas**: buscador y filtro por tradición (5 tradiciones) y por categoría (relajante,
-  digestiva, diurética, tonificante, cardiovascular, piel, cognitiva, salud masculina/femenina,
-  etc.) de las 109 plantas, con propiedades, usos tradicionales, forma de preparación y
-  contraindicaciones. Las hierbas de más de una tradición (como el jengibre o el hinojo) muestran
-  todas sus etiquetas. Las hierbas de la MTC además muestran su naturaleza térmica, sabor,
-  meridianos y función según esa tradición.
-- **Necesidades**: 10 necesidades de la tradición occidental + 7 patrones de la MTC, con buscador por
-  síntoma o por hierba, cada una con 2 combinaciones de hierbas sugeridas (ingredientes, preparación,
-  frecuencia y advertencias puntuales). Se puede tocar cualquier hierba de una combinación para ver su
-  detalle.
+- **Hierbas, frutas y verduras**: buscador y filtro por tipo (hierba/fruta/verdura), por tradición
+  (5 tradiciones) y por categoría (relajante, digestiva, diurética, tonificante, cardiovascular,
+  piel, cognitiva, salud masculina/femenina, etc.) de los 134 ingredientes, con propiedades, usos
+  tradicionales, forma de preparación y contraindicaciones. Los ingredientes de más de una
+  tradición (como el jengibre o el hinojo) muestran todas sus etiquetas. Las hierbas de la MTC
+  además muestran su naturaleza térmica, sabor, meridianos y función según esa tradición.
+- **Necesidades**: 11 necesidades de la tradición occidental (una de ellas, "Antioxidante y
+  vitamina C", pensada especialmente con frutas) + 7 patrones de la MTC, con buscador por síntoma o
+  por ingrediente, cada una con 2 o 3 combinaciones sugeridas (ingredientes, preparación,
+  frecuencia y advertencias puntuales) — varias ya combinan hierbas con frutas o verduras en una
+  misma mezcla. Se puede tocar cualquier ingrediente de una combinación para ver su detalle.
 - **Mi rutina**: favoritos. Tocando la ☆ en cualquier hierba o combinación se guarda acá (persistido
   en el dispositivo con AsyncStorage). Desde una combinación guardada se puede activar un
   **recordatorio diario** (notificación local) para no olvidarse de tomarla — disponible en la app

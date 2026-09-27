@@ -123,6 +123,20 @@ export const needs: Need[] = [
         preparation: 'Hervir el jengibre 5 minutos, agregar la menta al apagar y dejar reposar 5 minutos más.',
         frequency: '2 tazas al día, bien calientes.',
       },
+      {
+        id: 'vitamina-c-extra',
+        name: 'Vitamina C extra',
+        ingredients: [
+          { herbId: 'jengibre', proportion: '1 parte' },
+          { herbId: 'rosa-mosqueta', proportion: '1 parte' },
+          { herbId: 'naranja', proportion: '1/2 parte' },
+          { herbId: 'equinacea', proportion: '1/2 parte' },
+        ],
+        preparation:
+          'Hervir el jengibre 5 minutos, agregar la rosa mosqueta y la cáscara de naranja, hervir 5 minutos más, apagar y agregar la equinácea. Reposar 5 minutos tapado.',
+        frequency: '2 tazas al día durante los primeros días de síntomas, en cursos de no más de 7-10 días.',
+        notes: 'La equinácea no se recomienda en enfermedades autoinmunes sin consultar a un médico.',
+      },
     ],
   },
   {
@@ -184,6 +198,20 @@ export const needs: Need[] = [
         preparation: 'Hervir el diente de león y la ortiga 5 minutos, agregar el cedrón y reposar 3 minutos más.',
         frequency: '1 taza a la mañana y otra a media tarde.',
       },
+      {
+        id: 'infusion-verde',
+        name: 'Infusión verde',
+        ingredients: [
+          { herbId: 'cola-de-caballo', proportion: '1 parte' },
+          { herbId: 'apio-semillas', proportion: '1/2 parte' },
+          { herbId: 'diente-de-leon', proportion: '1 parte' },
+          { herbId: 'pepino', proportion: '2 rodajas' },
+        ],
+        preparation:
+          'Hervir la cola de caballo, el apio y el diente de león 8 minutos. Dejar entibiar y agregar las rodajas de pepino recién al final, sin hervirlas.',
+        frequency: '1-2 tazas al día, en cursos de no más de 2-3 semanas seguidas.',
+        notes: 'Las semillas de apio no se recomiendan en embarazo. Si tomás medicación para la presión o problemas renales, consultá antes por el efecto diurético.',
+      },
     ],
   },
   {
@@ -215,6 +243,20 @@ export const needs: Need[] = [
         preparation: 'Hervir el diente de león 5 minutos, agregar el cedrón y la menta, reposar 3 minutos más.',
         frequency: '1-2 tazas al día, con las comidas.',
       },
+      {
+        id: 'detox-citrico',
+        name: 'Detox cítrico',
+        ingredients: [
+          { herbId: 'alcachofa-hojas', proportion: '1 parte' },
+          { herbId: 'diente-de-leon', proportion: '1 parte' },
+          { herbId: 'limon', proportion: '1/2 parte' },
+          { herbId: 'pepino', proportion: '2 rodajas' },
+        ],
+        preparation:
+          'Hervir la alcachofa y el diente de león 8-10 minutos. Dejar entibiar, agregar el jugo y la cáscara de limón, y las rodajas de pepino al final.',
+        frequency: '1 taza antes de las comidas principales, en cursos de 5 a 7 días.',
+        notes: 'No recomendado en cálculos biliares u obstrucción de las vías biliares, ni en embarazo o lactancia sin consultar antes.',
+      },
     ],
   },
   {
@@ -245,6 +287,41 @@ export const needs: Need[] = [
         ],
         preparation: 'Hervir el jengibre 5 minutos, apagar y agregar la manzanilla y la melisa. Reposar 5-8 minutos.',
         frequency: '2 tazas al día, bien calientes, acompañado de calor local en el abdomen.',
+      },
+    ],
+  },
+  {
+    id: 'antioxidante-vitamina-c',
+    name: 'Antioxidante y vitamina C',
+    emoji: '🍊',
+    description:
+      'Combinaciones pensadas con frutas, además de hierbas, para sumar vitamina C y antioxidantes al día. Ideales para variar el sabor de las infusiones de todos los días.',
+    combos: [
+      {
+        id: 'escudo-citrico',
+        name: 'Escudo cítrico',
+        ingredients: [
+          { herbId: 'rosa-mosqueta', proportion: '1 parte' },
+          { herbId: 'hibisco', proportion: '1/2 parte' },
+          { herbId: 'naranja', proportion: '1/2 parte' },
+          { herbId: 'jengibre', proportion: '1/2 parte' },
+        ],
+        preparation:
+          'Hervir el jengibre 5 minutos, agregar la rosa mosqueta, el hibisco y la cáscara de naranja, hervir 5 minutos más. Colar bien.',
+        frequency: '1-2 tazas al día. Se puede tomar fría en verano.',
+      },
+      {
+        id: 'antioxidante-total',
+        name: 'Antioxidante total',
+        ingredients: [
+          { herbId: 'arandanos', proportion: '1 parte' },
+          { herbId: 'hibisco', proportion: '1/2 parte' },
+          { herbId: 'limon', proportion: '1/2 parte' },
+          { herbId: 'canela', proportion: '1/4 parte' },
+        ],
+        preparation: 'Hervir los arándanos, el hibisco y la canela 8-10 minutos. Agregar la cáscara y el jugo de limón al final.',
+        frequency: '1 taza al día, ideal a media mañana.',
+        notes: 'El hibisco puede sumar efecto con la medicación para la presión: consultar si la tomás de forma regular.',
       },
     ],
   },

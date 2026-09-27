@@ -15,6 +15,8 @@ export type Category =
 
 export type Tradition = 'occidental' | 'mtc' | 'ayurveda' | 'precolombina' | 'africana';
 
+export type Kind = 'hierba' | 'fruta' | 'verdura';
+
 export interface TcmInfo {
   naturaleza: string;
   sabor: string[];
@@ -34,6 +36,7 @@ export interface Herb {
   contraindications: string[];
   tradition: Tradition[];
   mtc?: TcmInfo;
+  kind?: Kind;
 }
 
 export interface ComboIngredient {
