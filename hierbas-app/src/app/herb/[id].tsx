@@ -4,10 +4,13 @@ import { getHerbById } from '../../data/herbs';
 import { colors, categoryLabels } from '../../theme/colors';
 import { Chip } from '../../components/Chip';
 import { Disclaimer } from '../../components/Disclaimer';
+import { FavoriteStar } from '../../components/FavoriteStar';
+import { useAppData } from '../../context/AppDataContext';
 
 export default function HerbDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const herb = getHerbById(id);
+  const { isFavoriteHerb, toggleFavoriteHerb } = useAppData();
 
   if (!herb) {
     return (
@@ -21,7 +24,10 @@ export default function HerbDetailScreen() {
     <>
       <Stack.Screen options={{ title: herb.name }} />
       <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-        <Text style={styles.name}>{herb.name}</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.name}>{herb.name}</Text>
+          <FavoriteStar active={isFavoriteHerb(herb.id)} onPress={() => toggleFavoriteHerb(herb.id)} size={26} />
+        </View>
         <Text style={styles.scientific}>{herb.scientificName}</Text>
         {herb.commonNames.length > 0 && (
           <Text style={styles.commonNames}>También conocida como: {herb.commonNames.join(', ')}</Text>
@@ -110,10 +116,16 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 32,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   name: {
     fontSize: 26,
     fontWeight: '800',
     color: colors.text,
+    flexShrink: 1,
   },
   scientific: {
     fontSize: 14,

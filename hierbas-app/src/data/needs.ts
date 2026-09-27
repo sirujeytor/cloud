@@ -1,4 +1,4 @@
-import { Need } from '../types';
+import { Combo, Need } from '../types';
 
 export const needs: Need[] = [
   {
@@ -541,3 +541,11 @@ export const needs: Need[] = [
 ];
 
 export const getNeedById = (id: string): Need | undefined => needs.find((n) => n.id === id);
+
+export const getComboWithNeed = (comboId: string): { need: Need; combo: Combo } | undefined => {
+  for (const need of needs) {
+    const combo = need.combos.find((c) => c.id === comboId);
+    if (combo) return { need, combo };
+  }
+  return undefined;
+};

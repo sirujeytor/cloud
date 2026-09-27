@@ -31,6 +31,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="favorites"
+        options={{
+          title: 'Mi rutina',
+          tabBarIcon: ({ focused }) => <TabIcon emoji="⭐" focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
         name="mtc"
         options={{
           title: 'M. China',
