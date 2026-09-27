@@ -1,4 +1,4 @@
-import { Kind, Tradition } from '../types';
+import { InfusionTag, Kind, Tradition } from '../types';
 
 export const colors = {
   background: '#F7F3E9',
@@ -64,4 +64,18 @@ export const kindBadgeColors: Record<Kind, string> = {
   hierba: colors.primary,
   fruta: '#C4433C',
   verdura: '#5B8A3A',
+};
+
+export const infusionTagLabels: Record<InfusionTag, string> = {
+  citrica: 'Cítrica',
+  especiada: 'Especiada',
+  frutal: 'Frutal',
+  floral: 'Floral',
+  clasica: 'Clásica',
+  fria: 'Fría / refrescante',
+  dulce: 'Dulce',
+  energizante: 'Energizante',
+  relajante: 'Relajante',
+  digestiva: 'Digestiva',
+  detox: 'Detox',
 };

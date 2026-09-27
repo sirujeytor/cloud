@@ -26,8 +26,15 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="needs"
         options={{
-          title: 'Necesidades',
+          title: 'Síntomas',
           tabBarIcon: ({ focused }) => <TabIcon emoji="🍵" focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
+        name="infusions"
+        options={{
+          title: 'Infusiones',
+          tabBarIcon: ({ focused }) => <TabIcon emoji="🫖" focused={focused} />,
         }}
       />
       <Tabs.Screen

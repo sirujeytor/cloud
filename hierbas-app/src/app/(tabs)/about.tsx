@@ -22,6 +22,9 @@ export default function AboutScreen() {
             contraindicaciones.{'\n'}
             • En la pestaña &ldquo;Necesidades&rdquo; elegís lo que estás sintiendo (estrés, insomnio, digestión
             pesada, etc.) y te sugerimos combinaciones de hierbas para preparar.{'\n'}
+            • En la pestaña &ldquo;Infusiones&rdquo; encontrás recetas ya armadas para explorar, no por síntoma
+            sino por sabor o estilo (cítricas, especiadas, frías, florales, etc.), pensadas para descubrir
+            nuevas combinaciones.{'\n'}
             • En la pestaña &ldquo;M. China&rdquo; encontrás los conceptos básicos de la MTC (Qi, Yin-Yang,
             los 5 elementos, sabores y naturalezas), sus hierbas clásicas y los patrones/desequilibrios
             más comunes con sus combinaciones.

@@ -20,6 +20,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="herb/[id]" options={{ title: 'Hierba' }} />
           <Stack.Screen name="need/[id]" options={{ title: 'Necesidad' }} />
+          <Stack.Screen name="infusion/[id]" options={{ title: 'Infusión' }} />
         </Stack>
       </AppDataProvider>
     </GestureHandlerRootView>

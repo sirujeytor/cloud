@@ -2,33 +2,36 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getHerbById } from '../../data/herbs';
 import { getComboWithNeed } from '../../data/needs';
+import { getInfusionById } from '../../data/infusions';
 import { colors } from '../../theme/colors';
 import { HerbCard } from '../../components/HerbCard';
 import { ComboCard } from '../../components/ComboCard';
+import { InfusionCard } from '../../components/InfusionCard';
 import { useAppData } from '../../context/AppDataContext';
 
 export default function FavoritesScreen() {
-  const { favoriteHerbIds, favoriteComboIds } = useAppData();
+  const { favoriteHerbIds, favoriteComboIds, favoriteInfusionIds } = useAppData();
 
   const favoriteHerbs = favoriteHerbIds.map(getHerbById).filter((h) => h !== undefined);
   const favoriteCombos = favoriteComboIds.map(getComboWithNeed).filter((c) => c !== undefined);
+  const favoriteInfusions = favoriteInfusionIds.map(getInfusionById).filter((i) => i !== undefined);
 
-  const isEmpty = favoriteHerbs.length === 0 && favoriteCombos.length === 0;
+  const isEmpty = favoriteHerbs.length === 0 && favoriteCombos.length === 0 && favoriteInfusions.length === 0;
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.title}>⭐ Mi rutina</Text>
         <Text style={styles.subtitle}>
-          Las hierbas y combinaciones que guardaste. Tocá la estrella en cualquier hierba o
-          combinación para agregarla o sacarla de acá.
+          Las hierbas, combinaciones e infusiones que guardaste. Tocá la estrella en cualquiera de
+          ellas para agregarla o sacarla de acá.
         </Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         {isEmpty && (
           <Text style={styles.empty}>
-            Todavía no guardaste nada. Buscá una hierba o una combinación y tocá la ☆ para guardarla acá.
+            Todavía no guardaste nada. Buscá una hierba, una combinación o una infusión y tocá la ☆ para guardarla acá.
           </Text>
         )}
 
@@ -51,6 +54,15 @@ export default function FavoritesScreen() {
                 </Text>
                 <ComboCard combo={combo} />
               </View>
+            ))}
+          </>
+        )}
+
+        {favoriteInfusions.length > 0 && (
+          <>
+            <Text style={styles.sectionTitle}>Infusiones guardadas</Text>
+            {favoriteInfusions.map((infusion) => (
+              <InfusionCard key={infusion.id} infusion={infusion} />
             ))}
           </>
         )}

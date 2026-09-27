@@ -13,12 +13,14 @@ export interface ReminderInfo {
 interface StoredData {
   favoriteHerbIds: string[];
   favoriteComboIds: string[];
+  favoriteInfusionIds: string[];
   reminders: Record<string, ReminderInfo>;
 }
 
 const emptyData: StoredData = {
   favoriteHerbIds: [],
   favoriteComboIds: [],
+  favoriteInfusionIds: [],
   reminders: {},
 };
 
@@ -28,10 +30,13 @@ interface AppDataContextValue {
   isHydrated: boolean;
   favoriteHerbIds: string[];
   favoriteComboIds: string[];
+  favoriteInfusionIds: string[];
   isFavoriteHerb: (id: string) => boolean;
   toggleFavoriteHerb: (id: string) => void;
   isFavoriteCombo: (id: string) => boolean;
   toggleFavoriteCombo: (id: string) => void;
+  isFavoriteInfusion: (id: string) => boolean;
+  toggleFavoriteInfusion: (id: string) => void;
   getReminder: (comboId: string) => ReminderInfo | undefined;
   setReminder: (comboId: string, title: string, body: string, hour: number, minute: number) => Promise<SetReminderResult>;
   clearReminder: (comboId: string) => Promise<void>;
@@ -52,6 +57,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           setData({
             favoriteHerbIds: parsed.favoriteHerbIds ?? [],
             favoriteComboIds: parsed.favoriteComboIds ?? [],
+            favoriteInfusionIds: parsed.favoriteInfusionIds ?? [],
             reminders: parsed.reminders ?? {},
           });
         }
@@ -75,6 +81,16 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AppDataContextValue>(() => {
     const isFavoriteHerb = (id: string) => data.favoriteHerbIds.includes(id);
     const isFavoriteCombo = (id: string) => data.favoriteComboIds.includes(id);
+    const isFavoriteInfusion = (id: string) => data.favoriteInfusionIds.includes(id);
+
+    const toggleFavoriteInfusion = (id: string) => {
+      setData((prev) => ({
+        ...prev,
+        favoriteInfusionIds: prev.favoriteInfusionIds.includes(id)
+          ? prev.favoriteInfusionIds.filter((i) => i !== id)
+          : [...prev.favoriteInfusionIds, id],
+      }));
+    };
 
     const toggleFavoriteHerb = (id: string) => {
       setData((prev) => ({
@@ -147,10 +163,13 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       isHydrated,
       favoriteHerbIds: data.favoriteHerbIds,
       favoriteComboIds: data.favoriteComboIds,
+      favoriteInfusionIds: data.favoriteInfusionIds,
       isFavoriteHerb,
       toggleFavoriteHerb,
       isFavoriteCombo,
       toggleFavoriteCombo,
+      isFavoriteInfusion,
+      toggleFavoriteInfusion,
       getReminder,
       setReminder,
       clearReminder,

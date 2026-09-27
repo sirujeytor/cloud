@@ -2508,6 +2508,49 @@ export const herbs: Herb[] = [
     tradition: ['occidental'],
     kind: 'verdura',
   },
+
+  // --- Especias clásicas para infusiones ---
+  {
+    id: 'clavo-de-olor',
+    name: 'Clavo de olor',
+    commonNames: [],
+    scientificName: 'Syzygium aromaticum',
+    categories: ['digestiva', 'antiinflamatoria'],
+    properties: ['Eugenol', 'Aceites esenciales'],
+    traditionalUses: [
+      'Especia clásica en infusiones especiadas de invierno, usada tradicionalmente como digestivo y para el dolor de muelas leve (aplicado localmente).',
+      'Muy usada junto a la canela y el jengibre en mezclas aromáticas y "calentitas".',
+    ],
+    preparation: '1-2 clavos enteros por taza, junto a otras especias. Hervir 5-8 minutos.',
+    contraindications: [
+      'Su compuesto principal (eugenol) tiene un leve efecto anticoagulante: precaución si tomás anticoagulantes o antiagregantes, o antes de una cirugía programada.',
+      'No recomendado en embarazo en dosis concentradas.',
+      'En niños menores de 6 años, evitar; de los 6 años en adelante, una taza ocasional con 1 clavo es aceptable.',
+      'No usar aceite esencial de clavo por vía oral: es mucho más concentrado y puede ser tóxico, sobre todo en niños.',
+    ],
+    tradition: ['occidental'],
+    kind: 'hierba',
+  },
+  {
+    id: 'pimienta-negra',
+    name: 'Pimienta negra',
+    commonNames: [],
+    scientificName: 'Piper nigrum',
+    categories: ['digestiva', 'estimulante'],
+    properties: ['Piperina'],
+    traditionalUses: [
+      'Usada tradicionalmente como digestivo y estimulante de la circulación.',
+      'Su piperina es clásicamente usada junto a la cúrcuma (como en la "leche dorada"), porque mejora notablemente la absorción de la curcumina.',
+    ],
+    preparation: 'Una pizca (1/8 de cucharadita) por taza, junto a otras especias. Hervir 5-8 minutos.',
+    contraindications: [
+      'Al mejorar la absorción de otras sustancias, consultar a un médico si se toma medicación de forma regular antes de combinarla de forma habitual.',
+      'Precaución en gastritis o úlceras, puede irritar en cantidad.',
+      'No recomendada en dosis altas durante el embarazo.',
+    ],
+    tradition: ['occidental'],
+    kind: 'hierba',
+  },
 ];
 
 export const getHerbById = (id: string): Herb | undefined => herbs.find((h) => h.id === id);

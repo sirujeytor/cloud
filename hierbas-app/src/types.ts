@@ -61,3 +61,28 @@ export interface Need {
   combos: Combo[];
   tradition?: Tradition[];
 }
+
+export type InfusionTag =
+  | 'citrica'
+  | 'especiada'
+  | 'frutal'
+  | 'floral'
+  | 'clasica'
+  | 'fria'
+  | 'dulce'
+  | 'energizante'
+  | 'relajante'
+  | 'digestiva'
+  | 'detox';
+
+export interface Infusion {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+  tags: InfusionTag[];
+  ingredients: ComboIngredient[];
+  preparation: string;
+  servingTip?: string;
+  notes?: string;
+}
