@@ -4,10 +4,10 @@ import { Herb } from '../types';
 import { colors, categoryLabels } from '../theme/colors';
 import { Chip } from './Chip';
 import { FavoriteStar } from './FavoriteStar';
+import { TraditionBadges } from './TraditionBadges';
 import { useAppData } from '../context/AppDataContext';
 
 export function HerbCard({ herb }: { herb: Herb }) {
-  const isMtc = herb.tradition.includes('mtc');
   const { isFavoriteHerb, toggleFavoriteHerb } = useAppData();
 
   return (
@@ -15,15 +15,11 @@ export function HerbCard({ herb }: { herb: Herb }) {
       <Link href={`/herb/${herb.id}`} asChild>
         <Pressable style={styles.card}>
           <View style={styles.headerRow}>
-            <View style={styles.titleRow}>
-              <Text style={styles.name}>{herb.name}</Text>
-              {isMtc && (
-                <View style={styles.mtcBadge}>
-                  <Text style={styles.mtcBadgeText}>MTC</Text>
-                </View>
-              )}
-            </View>
+            <Text style={styles.name}>{herb.name}</Text>
             <Text style={styles.scientific}>{herb.scientificName}</Text>
+            <View style={styles.badgesRow}>
+              <TraditionBadges tradition={herb.tradition} />
+            </View>
           </View>
           <View style={styles.chipsRow}>
             {herb.categories.map((c) => (
@@ -62,34 +58,19 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     paddingRight: 26,
   },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
   name: {
     fontSize: 17,
     fontWeight: '700',
     color: colors.text,
-    flexShrink: 1,
-  },
-  mtcBadge: {
-    backgroundColor: colors.secondary,
-    borderRadius: 6,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    marginLeft: 8,
-  },
-  mtcBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '800',
   },
   scientific: {
     fontSize: 12,
     fontStyle: 'italic',
     color: colors.textMuted,
     marginTop: 2,
+  },
+  badgesRow: {
+    marginTop: 6,
   },
   chipsRow: {
     flexDirection: 'row',

@@ -7,9 +7,13 @@ export type Category =
   | 'depurativa'
   | 'estimulante'
   | 'femenina'
-  | 'tonificante';
+  | 'masculina'
+  | 'tonificante'
+  | 'cardiovascular'
+  | 'piel'
+  | 'cognitiva';
 
-export type Tradition = 'occidental' | 'mtc';
+export type Tradition = 'occidental' | 'mtc' | 'ayurveda' | 'precolombina' | 'africana';
 
 export interface TcmInfo {
   naturaleza: string;

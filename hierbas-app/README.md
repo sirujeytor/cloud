@@ -1,23 +1,34 @@
 # Hierbas & Infusiones 🌿☯️
 
 App móvil (Expo + React Native + TypeScript) para explorar hierbas y plantas usadas en infusión,
-combinando dos tradiciones:
+combinando cinco tradiciones de herboristería:
 
-- **Herboristería occidental / criolla**: ~20 hierbas (manzanilla, jengibre, valeriana, boldo, etc.)
-- **Medicina Tradicional China (MTC)**: ~14 hierbas clásicas (ginseng, astrágalo, reishi, goji, etc.),
-  conceptos básicos (Qi, Yin-Yang, 5 elementos, 5 sabores, naturaleza térmica) y los patrones/
-  desequilibrios más comunes (Qi bajo, Yin bajo, Qi del hígado estancado, humedad-flema, Yang del
-  riñón bajo, Wei Qi/defensas, Shen).
+- **Herboristería occidental / criolla y Grecorromana-Árabe**: ~30 hierbas (manzanilla, jengibre,
+  valeriana, boldo, hipérico, tomillo, etc.)
+- **Medicina Tradicional China (MTC)**: ~21 hierbas clásicas (ginseng, astrágalo, reishi, goji,
+  danshen, ginkgo, etc.), conceptos básicos (Qi, Yin-Yang, 5 elementos, 5 sabores, naturaleza
+  térmica) y los patrones/desequilibrios más comunes (Qi bajo, Yin bajo, Qi del hígado estancado,
+  humedad-flema, Yang del riñón bajo, Wei Qi/defensas, Shen).
+- **Ayurveda (India)**: 20 hierbas (cúrcuma, ashwagandha, tulsi, brahmi, shatavari, etc.).
+- **Culturas precolombinas de América**: 20 hierbas (boldo, muña/peperina, maca, uña de gato,
+  cacao, quina, etc.).
+- **Medicina tradicional africana**: 20 hierbas (rooibos, garra del diablo, pygeum, aloe vera,
+  kanna, etc.), incluidas algunas con implicancias de seguridad importantes (kratom, hipérico)
+  investigadas y documentadas con advertencias específicas.
 
-Este contenido es de carácter tradicional y educativo, no reemplaza el consejo médico. Cada pantalla
-incluye un recordatorio de esto.
+En total, 109 hierbas. Este contenido es de carácter tradicional y educativo, no reemplaza el
+consejo médico. Cada pantalla incluye un recordatorio de esto, y las hierbas con riesgos conocidos
+(interacciones medicamentosas, toxicidad, embarazo) tienen contraindicaciones explícitas y
+reforzadas.
 
 ## Funcionalidad
 
-- **Hierbas**: buscador y filtro por tradición (occidental / MTC) y por categoría (relajante,
-  digestiva, diurética, tonificante, etc.) de ~34 plantas en total, con propiedades, usos
-  tradicionales, forma de preparación y contraindicaciones. Las hierbas de la MTC además muestran su
-  naturaleza térmica, sabor, meridianos y función según esa tradición.
+- **Hierbas**: buscador y filtro por tradición (5 tradiciones) y por categoría (relajante,
+  digestiva, diurética, tonificante, cardiovascular, piel, cognitiva, salud masculina/femenina,
+  etc.) de las 109 plantas, con propiedades, usos tradicionales, forma de preparación y
+  contraindicaciones. Las hierbas de más de una tradición (como el jengibre o el hinojo) muestran
+  todas sus etiquetas. Las hierbas de la MTC además muestran su naturaleza térmica, sabor,
+  meridianos y función según esa tradición.
 - **Necesidades**: 10 necesidades de la tradición occidental + 7 patrones de la MTC, con buscador por
   síntoma o por hierba, cada una con 2 combinaciones de hierbas sugeridas (ingredientes, preparación,
   frecuencia y advertencias puntuales). Se puede tocar cualquier hierba de una combinación para ver su

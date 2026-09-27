@@ -1,3 +1,5 @@
+import { Tradition } from '../types';
+
 export const colors = {
   background: '#F7F3E9',
   surface: '#FFFFFF',
@@ -21,10 +23,33 @@ export const categoryLabels: Record<string, string> = {
   depurativa: 'Depurativa',
   estimulante: 'Estimulante',
   femenina: 'Ciclo femenino',
+  masculina: 'Salud masculina',
   tonificante: 'Tonificante',
+  cardiovascular: 'Cardiovascular',
+  piel: 'Piel',
+  cognitiva: 'Cognitiva',
 };
 
-export const traditionLabels: Record<string, string> = {
+export const traditionLabels: Record<Tradition, string> = {
   occidental: 'Occidental',
   mtc: 'Medicina china',
+  ayurveda: 'Ayurveda',
+  precolombina: 'Culturas de América',
+  africana: 'Medicina africana',
+};
+
+export const traditionBadgeLabels: Record<Tradition, string> = {
+  occidental: 'OCCIDENTAL',
+  mtc: 'MTC',
+  ayurveda: 'AYURVEDA',
+  precolombina: 'AMÉRICA',
+  africana: 'ÁFRICA',
+};
+
+export const traditionBadgeColors: Record<Tradition, string> = {
+  occidental: '#4C7A50',
+  mtc: '#C98F4B',
+  ayurveda: '#B8621B',
+  precolombina: '#B5533C',
+  africana: '#2C6E8C',
 };

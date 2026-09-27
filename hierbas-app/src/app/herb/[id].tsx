@@ -5,6 +5,7 @@ import { colors, categoryLabels } from '../../theme/colors';
 import { Chip } from '../../components/Chip';
 import { Disclaimer } from '../../components/Disclaimer';
 import { FavoriteStar } from '../../components/FavoriteStar';
+import { TraditionBadges } from '../../components/TraditionBadges';
 import { useAppData } from '../../context/AppDataContext';
 
 export default function HerbDetailScreen() {
@@ -32,6 +33,10 @@ export default function HerbDetailScreen() {
         {herb.commonNames.length > 0 && (
           <Text style={styles.commonNames}>También conocida como: {herb.commonNames.join(', ')}</Text>
         )}
+
+        <View style={styles.traditionBadgesWrap}>
+          <TraditionBadges tradition={herb.tradition} size="large" />
+        </View>
 
         <View style={styles.chipsRow}>
           {herb.categories.map((c) => (
@@ -137,6 +142,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.textMuted,
     marginTop: 6,
+  },
+  traditionBadgesWrap: {
+    marginTop: 8,
   },
   chipsRow: {
     flexDirection: 'row',
