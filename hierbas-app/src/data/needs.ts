@@ -1,0 +1,313 @@
+import { Need } from '../types';
+
+export const needs: Need[] = [
+  {
+    id: 'ansiedad-estres',
+    name: 'Ansiedad y estrés',
+    emoji: '😌',
+    description:
+      'Para esos días en los que la cabeza no para y el cuerpo está en alerta. Estas combinaciones se usan tradicionalmente para bajar un cambio.',
+    combos: [
+      {
+        id: 'calma-tres-hierbas',
+        name: 'Calma en 3 hierbas',
+        ingredients: [
+          { herbId: 'tilo', proportion: '1 parte' },
+          { herbId: 'melisa', proportion: '1 parte' },
+          { herbId: 'pasiflora', proportion: '1 parte' },
+        ],
+        preparation: 'Mezclar partes iguales. Usar 1 cucharada de la mezcla por taza de agua caliente. Infusionar tapado 8 minutos.',
+        frequency: '1-2 tazas al día, en los momentos de mayor tensión.',
+        notes: 'Si ya tomás ansiolíticos o sedantes, consultá antes con tu médico por posible efecto sumado.',
+      },
+      {
+        id: 'noche-tranquila-ansiedad',
+        name: 'Bajar revoluciones',
+        ingredients: [
+          { herbId: 'manzanilla', proportion: '1 parte' },
+          { herbId: 'lavanda', proportion: '1/2 parte' },
+          { herbId: 'melisa', proportion: '1 parte' },
+        ],
+        preparation: 'Mezclar y usar 1 cucharadita de la mezcla por taza. Infusionar 5-8 minutos.',
+        frequency: '1 taza a media tarde y otra después de cenar.',
+      },
+    ],
+  },
+  {
+    id: 'insomnio',
+    name: 'Insomnio y mejorar el sueño',
+    emoji: '🌙',
+    description: 'Combinaciones pensadas para tomar antes de dormir y favorecer un sueño más profundo.',
+    combos: [
+      {
+        id: 'noche-profunda',
+        name: 'Noche profunda',
+        ingredients: [
+          { herbId: 'valeriana', proportion: '1 parte' },
+          { herbId: 'pasiflora', proportion: '1 parte' },
+          { herbId: 'tilo', proportion: '1 parte' },
+        ],
+        preparation: 'Mezclar partes iguales. 1 cucharadita de la mezcla por taza. Infusionar tapado 10 minutos.',
+        frequency: '1 taza, 30-45 minutos antes de acostarse.',
+        notes: 'No combinar con alcohol. Puede dar somnolencia: no manejar después de tomarla.',
+      },
+      {
+        id: 'ritual-dulce-sueño',
+        name: 'Ritual dulce para dormir',
+        ingredients: [
+          { herbId: 'manzanilla', proportion: '1 parte' },
+          { herbId: 'lavanda', proportion: '1/2 parte' },
+          { herbId: 'melisa', proportion: '1 parte' },
+        ],
+        preparation: 'Mezclar y usar 1 cucharadita por taza. Infusionar 5-8 minutos, sin pantallas mientras se toma.',
+        frequency: '1 taza antes de dormir, como parte de una rutina relajante.',
+      },
+    ],
+  },
+  {
+    id: 'digestion',
+    name: 'Digestión pesada e hinchazón',
+    emoji: '🍽️',
+    description: 'Para después de comidas abundantes, gases o esa sensación de "piedra en el estómago".',
+    combos: [
+      {
+        id: 'post-comida',
+        name: 'Post comida pesada',
+        ingredients: [
+          { herbId: 'boldo', proportion: '1/2 parte' },
+          { herbId: 'peperina', proportion: '1 parte' },
+          { herbId: 'menta', proportion: '1 parte' },
+        ],
+        preparation: 'Mezclar y usar 1 cucharadita por taza. Infusionar 5-8 minutos.',
+        frequency: '1 taza después de la comida principal. No usar de forma continua por más de 2 semanas.',
+        notes: 'El boldo no se recomienda en embarazo, lactancia ni problemas hepáticos o biliares diagnosticados.',
+      },
+      {
+        id: 'gases-hinchazon',
+        name: 'Contra gases e hinchazón',
+        ingredients: [
+          { herbId: 'hinojo', proportion: '1 parte' },
+          { herbId: 'anis-estrellado', proportion: '1/2 parte' },
+          { herbId: 'cedron', proportion: '1 parte' },
+        ],
+        preparation: 'Machacar un poco las semillas de hinojo y el anís. Hervir 5-8 minutos junto con el cedrón.',
+        frequency: '1 taza después de las comidas.',
+      },
+    ],
+  },
+  {
+    id: 'resfrio-defensas',
+    name: 'Resfrío y defensas bajas',
+    emoji: '🤧',
+    description: 'Para acompañar los primeros síntomas de resfrío y dar una mano a las defensas.',
+    combos: [
+      {
+        id: 'escudo-invierno',
+        name: 'Escudo de invierno',
+        ingredients: [
+          { herbId: 'jengibre', proportion: '1 parte' },
+          { herbId: 'equinacea', proportion: '1 parte' },
+          { herbId: 'tilo', proportion: '1 parte' },
+        ],
+        preparation: 'Hervir el jengibre 5 minutos, apagar el fuego, agregar la equinácea y el tilo. Reposar 8 minutos tapado.',
+        frequency: '2-3 tazas al día durante los primeros días de síntomas, en cursos de no más de 7-10 días.',
+        notes: 'La equinácea no se recomienda en enfermedades autoinmunes sin consultar a un médico.',
+      },
+      {
+        id: 'garganta-abrigada',
+        name: 'Garganta abrigada',
+        ingredients: [
+          { herbId: 'jengibre', proportion: '1 parte' },
+          { herbId: 'menta', proportion: '1/2 parte' },
+        ],
+        preparation: 'Hervir el jengibre 5 minutos, agregar la menta al apagar y dejar reposar 5 minutos más.',
+        frequency: '2 tazas al día, bien calientes.',
+      },
+    ],
+  },
+  {
+    id: 'dolor-cabeza',
+    name: 'Dolor de cabeza y tensión',
+    emoji: '🤕',
+    description: 'Para el dolor de cabeza leve asociado a tensión, tomado con calma en un lugar tranquilo.',
+    combos: [
+      {
+        id: 'alivio-sien',
+        name: 'Alivio de sien',
+        ingredients: [
+          { herbId: 'menta', proportion: '1 parte' },
+          { herbId: 'manzanilla', proportion: '1 parte' },
+          { herbId: 'romero', proportion: '1/2 parte' },
+        ],
+        preparation: 'Mezclar y usar 1 cucharadita por taza. Infusionar 5-8 minutos.',
+        frequency: '1 taza apenas empieza la molestia.',
+      },
+      {
+        id: 'tension-abajo',
+        name: 'Bajar la tensión',
+        ingredients: [
+          { herbId: 'lavanda', proportion: '1/2 parte' },
+          { herbId: 'tilo', proportion: '1 parte' },
+          { herbId: 'menta', proportion: '1/2 parte' },
+        ],
+        preparation: 'Mezclar y usar 1 cucharadita por taza. Infusionar 5-8 minutos en un ambiente tranquilo.',
+        frequency: '1 taza cuando el dolor está asociado a estrés o tensión acumulada.',
+      },
+    ],
+  },
+  {
+    id: 'retencion-liquidos',
+    name: 'Retención de líquidos',
+    emoji: '💧',
+    description: 'Combinaciones diuréticas suaves, pensadas para tomar durante el día.',
+    combos: [
+      {
+        id: 'drenaje-suave',
+        name: 'Drenaje suave',
+        ingredients: [
+          { herbId: 'cola-de-caballo', proportion: '1 parte' },
+          { herbId: 'diente-de-leon', proportion: '1 parte' },
+          { herbId: 'hinojo', proportion: '1/2 parte' },
+        ],
+        preparation: 'Hervir 5-8 minutos. Colar bien.',
+        frequency: '1-2 tazas al día, en cursos de no más de 2-3 semanas seguidas.',
+        notes: 'Si tomás medicación para la presión o problemas renales, consultá antes por el efecto diurético.',
+      },
+      {
+        id: 'piernas-livianas',
+        name: 'Piernas livianas',
+        ingredients: [
+          { herbId: 'diente-de-leon', proportion: '1 parte' },
+          { herbId: 'ortiga', proportion: '1/2 parte' },
+          { herbId: 'cedron', proportion: '1 parte' },
+        ],
+        preparation: 'Hervir el diente de león y la ortiga 5 minutos, agregar el cedrón y reposar 3 minutos más.',
+        frequency: '1 taza a la mañana y otra a media tarde.',
+      },
+    ],
+  },
+  {
+    id: 'purificacion-detox',
+    name: 'Purificación y detox hepático',
+    emoji: '🌿',
+    description: 'Combinaciones tradicionalmente usadas como "cura depurativa" de unos días, para dar un respiro al hígado.',
+    combos: [
+      {
+        id: 'reset-higado',
+        name: 'Reset para el hígado',
+        ingredients: [
+          { herbId: 'boldo', proportion: '1/2 parte' },
+          { herbId: 'carqueja', proportion: '1 parte' },
+          { herbId: 'diente-de-leon', proportion: '1 parte' },
+        ],
+        preparation: 'Hervir 5-8 minutos. El sabor es amargo; se puede endulzar levemente con miel.',
+        frequency: '1 taza antes de las comidas principales, en cursos de 5 a 7 días.',
+        notes: 'No recomendado en embarazo, lactancia, ni problemas hepáticos o biliares diagnosticados. No usar de forma continua.',
+      },
+      {
+        id: 'dia-liviano',
+        name: 'Día liviano',
+        ingredients: [
+          { herbId: 'diente-de-leon', proportion: '1 parte' },
+          { herbId: 'cedron', proportion: '1 parte' },
+          { herbId: 'menta', proportion: '1/2 parte' },
+        ],
+        preparation: 'Hervir el diente de león 5 minutos, agregar el cedrón y la menta, reposar 3 minutos más.',
+        frequency: '1-2 tazas al día, con las comidas.',
+      },
+    ],
+  },
+  {
+    id: 'dolores-menstruales',
+    name: 'Dolores menstruales',
+    emoji: '🌸',
+    description: 'Para acompañar los días de ciclo con más molestias.',
+    combos: [
+      {
+        id: 'calma-ciclo',
+        name: 'Calma para el ciclo',
+        ingredients: [
+          { herbId: 'salvia', proportion: '1/2 parte' },
+          { herbId: 'manzanilla', proportion: '1 parte' },
+          { herbId: 'jengibre', proportion: '1/2 parte' },
+        ],
+        preparation: 'Hervir el jengibre 5 minutos, agregar la salvia y la manzanilla, reposar 5 minutos tapado.',
+        frequency: '2-3 tazas al día durante los días de molestia, sin extender más de una semana por mes.',
+        notes: 'La salvia no se recomienda en embarazo ni lactancia.',
+      },
+      {
+        id: 'abrigo-abdominal',
+        name: 'Abrigo abdominal',
+        ingredients: [
+          { herbId: 'manzanilla', proportion: '1 parte' },
+          { herbId: 'jengibre', proportion: '1/2 parte' },
+          { herbId: 'melisa', proportion: '1 parte' },
+        ],
+        preparation: 'Hervir el jengibre 5 minutos, apagar y agregar la manzanilla y la melisa. Reposar 5-8 minutos.',
+        frequency: '2 tazas al día, bien calientes, acompañado de calor local en el abdomen.',
+      },
+    ],
+  },
+  {
+    id: 'relajacion-fin-dia',
+    name: 'Relajación de fin del día',
+    emoji: '🍵',
+    description: 'Un ritual simple para cerrar el día y bajar el ritmo antes de la noche.',
+    combos: [
+      {
+        id: 'cierre-de-dia',
+        name: 'Cierre de día',
+        ingredients: [
+          { herbId: 'melisa', proportion: '1 parte' },
+          { herbId: 'manzanilla', proportion: '1 parte' },
+          { herbId: 'cedron', proportion: '1 parte' },
+        ],
+        preparation: 'Mezclar partes iguales. 1 cucharadita por taza. Infusionar 5-8 minutos.',
+        frequency: '1 taza después de cenar, sin pantallas, como cierre de la jornada.',
+      },
+      {
+        id: 'nube-lavanda',
+        name: 'Nube de lavanda',
+        ingredients: [
+          { herbId: 'lavanda', proportion: '1/2 parte' },
+          { herbId: 'tilo', proportion: '1 parte' },
+          { herbId: 'pasiflora', proportion: '1/2 parte' },
+        ],
+        preparation: 'Mezclar y usar 1 cucharadita por taza. Infusionar tapado 8 minutos.',
+        frequency: '1 taza a la noche, en un ambiente tranquilo y con poca luz.',
+      },
+    ],
+  },
+  {
+    id: 'energia-sin-cafeina',
+    name: 'Energía y vitalidad sin cafeína',
+    emoji: '⚡',
+    description: 'Para los días de bajón, sin recurrir a la cafeína.',
+    combos: [
+      {
+        id: 'impulso-natural',
+        name: 'Impulso natural',
+        ingredients: [
+          { herbId: 'romero', proportion: '1 parte' },
+          { herbId: 'jengibre', proportion: '1/2 parte' },
+          { herbId: 'menta', proportion: '1/2 parte' },
+        ],
+        preparation: 'Hervir el jengibre 5 minutos, agregar el romero y la menta, reposar 5 minutos más.',
+        frequency: '1 taza a la mañana o a media tarde. Evitar tomarla muy tarde por su efecto estimulante suave.',
+      },
+      {
+        id: 'vitalidad-mineral',
+        name: 'Vitalidad mineral',
+        ingredients: [
+          { herbId: 'ortiga', proportion: '1 parte' },
+          { herbId: 'romero', proportion: '1/2 parte' },
+          { herbId: 'cedron', proportion: '1 parte' },
+        ],
+        preparation: 'Hervir la ortiga 5 minutos, agregar el romero y el cedrón, reposar 3 minutos más.',
+        frequency: '1 taza al día, ideal en épocas de cansancio general.',
+      },
+    ],
+  },
+];
+
+export const getNeedById = (id: string): Need | undefined => needs.find((n) => n.id === id);
