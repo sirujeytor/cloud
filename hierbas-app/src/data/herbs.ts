@@ -20,6 +20,7 @@ export const herbs: Herb[] = [
       'Uso con precaución junto a anticoagulantes.',
       'Consultar en embarazo si se consume en grandes cantidades.',
     ],
+    tradition: ['occidental'],
   },
   {
     id: 'tilo',
@@ -38,6 +39,7 @@ export const herbs: Herb[] = [
       'Uso prolongado y en grandes cantidades no recomendado por posible efecto sobre el corazón.',
       'Precaución si se toma junto a sedantes, por efecto sumado.',
     ],
+    tradition: ['occidental'],
   },
   {
     id: 'cedron',
@@ -52,6 +54,7 @@ export const herbs: Herb[] = [
     ],
     preparation: '4-5 hojas frescas o 1 cucharadita de hojas secas por taza. Infusionar 5 minutos.',
     contraindications: ['Sin contraindicaciones relevantes en el consumo habitual como infusión.'],
+    tradition: ['occidental'],
   },
   {
     id: 'boldo',
@@ -69,6 +72,7 @@ export const herbs: Herb[] = [
       'No recomendado en embarazo, lactancia, ni en enfermedades hepáticas o biliares diagnosticadas.',
       'Evitar uso continuado por más de 2 semanas seguidas.',
     ],
+    tradition: ['occidental'],
   },
   {
     id: 'melisa',
@@ -83,6 +87,7 @@ export const herbs: Herb[] = [
     ],
     preparation: '1 cucharadita de hojas secas (o un puñado de hojas frescas) por taza. Infusionar 5-8 minutos.',
     contraindications: ['Precaución en hipotiroidismo, puede interferir levemente con la función tiroidea en uso excesivo.'],
+    tradition: ['occidental'],
   },
   {
     id: 'valeriana',
@@ -102,6 +107,7 @@ export const herbs: Herb[] = [
       'Puede dar somnolencia: no conducir ni operar maquinaria luego de tomarla.',
       'No recomendada en embarazo y lactancia.',
     ],
+    tradition: ['occidental'],
   },
   {
     id: 'pasiflora',
@@ -119,6 +125,7 @@ export const herbs: Herb[] = [
       'Precaución si se toma junto a sedantes o ansiolíticos, por efecto sumado.',
       'No recomendada en embarazo.',
     ],
+    tradition: ['occidental'],
   },
   {
     id: 'lavanda',
@@ -133,6 +140,7 @@ export const herbs: Herb[] = [
     ],
     preparation: '1 cucharadita de flores secas por taza. Infusionar 5 minutos, en poca cantidad porque su sabor es intenso.',
     contraindications: ['En infusión y dosis habituales no presenta contraindicaciones relevantes.'],
+    tradition: ['occidental'],
   },
   {
     id: 'jengibre',
@@ -152,6 +160,14 @@ export const herbs: Herb[] = [
       'No abusar en caso de gastritis o úlceras, puede irritar en exceso.',
       'Consultar en embarazo si se usa más allá de cantidades culinarias.',
     ],
+    tradition: ['occidental', 'mtc'],
+    mtc: {
+      naturaleza: 'Tibia',
+      sabor: ['Picante'],
+      meridianos: ['Pulmón', 'Bazo', 'Estómago'],
+      funcion:
+        'Conocida como "Sheng Jiang". Libera el exterior y dispersa el frío, calienta el centro y detiene el vómito, resuelve la flema y calma la tos.',
+    },
   },
   {
     id: 'menta',
@@ -169,6 +185,14 @@ export const herbs: Herb[] = [
       'Puede empeorar el reflujo gastroesofágico en algunas personas.',
       'No recomendada en bebés y niños pequeños.',
     ],
+    tradition: ['occidental', 'mtc'],
+    mtc: {
+      naturaleza: 'Fresca',
+      sabor: ['Picante', 'Dulce'],
+      meridianos: ['Pulmón', 'Hígado'],
+      funcion:
+        'Similar a la "Bo He" china. Dispersa el viento-calor, aclara la cabeza y los ojos, y ayuda a que el Qi del hígado circule cuando hay tensión.',
+    },
   },
   {
     id: 'peperina',
@@ -183,6 +207,7 @@ export const herbs: Herb[] = [
     ],
     preparation: '1 cucharadita de hojas secas por taza. Infusionar 5 minutos.',
     contraindications: ['No recomendada en embarazo. Evitar consumo excesivo y prolongado.'],
+    tradition: ['occidental'],
   },
   {
     id: 'anis-estrellado',
@@ -197,6 +222,7 @@ export const herbs: Herb[] = [
     ],
     preparation: '1 estrella por taza. Hervir 5 minutos.',
     contraindications: ['Usar siempre anís estrellado verdadero (Illicium verum), no variedades tóxicas similares de origen dudoso.'],
+    tradition: ['occidental'],
   },
   {
     id: 'hinojo',
@@ -211,6 +237,7 @@ export const herbs: Herb[] = [
     ],
     preparation: '1 cucharadita de semillas machacadas por taza. Hervir 5-8 minutos.',
     contraindications: ['Precaución en embarazo en dosis altas por su leve efecto hormonal (fitoestrógenos).'],
+    tradition: ['occidental'],
   },
   {
     id: 'diente-de-leon',
@@ -228,6 +255,7 @@ export const herbs: Herb[] = [
       'Evitar en caso de obstrucción de vías biliares o cálculos, consultar antes con un médico.',
       'Por su efecto diurético, tener en cuenta si se toman medicamentos para la presión.',
     ],
+    tradition: ['occidental'],
   },
   {
     id: 'ortiga',
@@ -246,6 +274,7 @@ export const herbs: Herb[] = [
       'Por su efecto diurético leve, tener precaución junto a diuréticos o medicación para la presión.',
       'No recomendada en embarazo sin supervisión.',
     ],
+    tradition: ['occidental'],
   },
   {
     id: 'equinacea',
@@ -264,6 +293,7 @@ export const herbs: Herb[] = [
       'Evitar uso continuo por más de dos semanas seguidas.',
       'Alergia posible en personas alérgicas a plantas de la familia de las asteráceas.',
     ],
+    tradition: ['occidental'],
   },
   {
     id: 'cola-de-caballo',
@@ -281,6 +311,7 @@ export const herbs: Herb[] = [
       'Por su efecto diurético, precaución junto a medicación para la presión o problemas renales.',
       'No recomendada en embarazo, lactancia ni en niños.',
     ],
+    tradition: ['occidental'],
   },
   {
     id: 'carqueja',
@@ -295,6 +326,7 @@ export const herbs: Herb[] = [
     ],
     preparation: '1 cucharadita de planta seca por taza. Infusionar 5-8 minutos. Sabor muy amargo, se puede combinar con otras hierbas.',
     contraindications: ['No recomendada en embarazo, lactancia ni en hipotensión (puede bajar la presión).'],
+    tradition: ['occidental'],
   },
   {
     id: 'salvia',
@@ -313,6 +345,7 @@ export const herbs: Herb[] = [
       'Evitar en epilepsia, por compuestos que en dosis muy altas pueden ser neuroestimulantes.',
       'No usar de forma continua por más de 2 semanas seguidas.',
     ],
+    tradition: ['occidental'],
   },
   {
     id: 'romero',
@@ -330,6 +363,349 @@ export const herbs: Herb[] = [
       'No recomendado en dosis altas durante el embarazo.',
       'Evitar en hipertensión no controlada, ya que en algunas personas puede elevar la presión.',
     ],
+    tradition: ['occidental'],
+  },
+
+  // --- Medicina Tradicional China (MTC) ---
+  {
+    id: 'ginseng',
+    name: 'Ginseng',
+    commonNames: ['Ren Shen'],
+    scientificName: 'Panax ginseng',
+    categories: ['tonificante', 'estimulante'],
+    properties: ['Ginsenósidos', 'Polisacáridos'],
+    traditionalUses: [
+      'Una de las raíces más valoradas de la Medicina Tradicional China (MTC) para tonificar el Qi original y combatir el cansancio profundo.',
+      'Usada tradicionalmente para la claridad mental, la memoria y la recuperación después de un desgaste físico o una enfermedad larga.',
+    ],
+    preparation:
+      '2-3 rodajas finas de raíz por taza. Hervir a fuego bajo 15-20 minutos (decocción), tapado. Se puede reutilizar la misma raíz una segunda vez.',
+    contraindications: [
+      'No recomendado en hipertensión no controlada ni junto con estimulantes o cafeína en exceso.',
+      'Evitar en cuadros de "calor" (insomnio con agitación, boca seca, cara roja) sin combinarlo con hierbas que lo equilibren.',
+      'No usar de forma continua por más de 3-4 semanas sin descanso.',
+      'Precaución si se toma junto a anticoagulantes o antidepresivos, consultar antes con un médico.',
+    ],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Tibia',
+      sabor: ['Dulce', 'Ligeramente amargo'],
+      meridianos: ['Bazo', 'Pulmón', 'Corazón'],
+      funcion:
+        'Tonifica poderosamente el Qi original (Yuan Qi), fortalece el Bazo y el Pulmón, genera fluidos y calma la mente.',
+    },
+  },
+  {
+    id: 'astragalo',
+    name: 'Astrágalo',
+    commonNames: ['Huang Qi'],
+    scientificName: 'Astragalus membranaceus',
+    categories: ['tonificante', 'inmune'],
+    properties: ['Polisacáridos', 'Flavonoides', 'Astragalósidos'],
+    traditionalUses: [
+      'Una de las hierbas más usadas en la MTC para fortalecer el "Qi defensivo" (Wei Qi), la capa protectora frente a resfríos frecuentes.',
+      'Usada tradicionalmente para el cansancio con poco apetito y para acelerar la recuperación después de una enfermedad.',
+    ],
+    preparation: '3-5 rodajas de raíz por taza. Hervir 10-15 minutos. También se usa en cursos largos como caldo de base.',
+    contraindications: [
+      'No recomendado durante un resfrío o gripe con fiebre activa (en MTC se usa para prevenir, no en la fase aguda con "calor").',
+      'Precaución en enfermedades autoinmunes, consultar antes con un profesional.',
+    ],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Tibia',
+      sabor: ['Dulce'],
+      meridianos: ['Bazo', 'Pulmón'],
+      funcion:
+        'Tonifica el Qi del Bazo y del Pulmón, fortalece el Qi defensivo (Wei Qi) en la superficie del cuerpo y ayuda a la recuperación de tejidos.',
+    },
+  },
+  {
+    id: 'regaliz-chino',
+    name: 'Regaliz chino',
+    commonNames: ['Orozuz', 'Gan Cao'],
+    scientificName: 'Glycyrrhiza uralensis',
+    categories: ['tonificante', 'digestiva'],
+    properties: ['Glicirricina', 'Flavonoides'],
+    traditionalUses: [
+      'En la MTC se usa en pequeñas cantidades dentro de casi cualquier combinación, porque "armoniza" el efecto de las demás hierbas.',
+      'Tradicionalmente usado para el Bazo y el Estómago débiles, y para calmar la tos.',
+    ],
+    preparation: '1 trozo pequeño de raíz (o media cucharadita) por taza, junto a otras hierbas. Hervir 8-10 minutos.',
+    contraindications: [
+      'No usar en dosis altas ni de forma prolongada: puede elevar la presión arterial y bajar el potasio.',
+      'No recomendado en hipertensión, insuficiencia renal o si se toman diuréticos, sin supervisión.',
+      'No recomendado en embarazo en cantidades más allá de las culinarias.',
+    ],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Neutra',
+      sabor: ['Dulce'],
+      meridianos: ['Bazo', 'Estómago', 'Pulmón', 'Corazón'],
+      funcion:
+        'Tonifica el Qi del centro, armoniza y modera las propiedades fuertes de otras hierbas dentro de una misma combinación, humedece el pulmón y calma la tos.',
+    },
+  },
+  {
+    id: 'dang-gui',
+    name: 'Angélica china',
+    commonNames: ['Dang Gui'],
+    scientificName: 'Angelica sinensis',
+    categories: ['tonificante', 'femenina'],
+    properties: ['Ácido ferúlico', 'Polisacáridos', 'Aceites esenciales'],
+    traditionalUses: [
+      'Una de las raíces más usadas en la MTC para "nutrir la sangre" y regular el ciclo menstrual.',
+      'Tradicionalmente usada para la palidez, el mareo leve y la sensación de frío en manos y pies asociados a sangre débil.',
+    ],
+    preparation: '3-4 rodajas de raíz por taza. Hervir 10-15 minutos.',
+    contraindications: [
+      'No recomendada en embarazo ni durante sangrado menstrual abundante.',
+      'Precaución junto a anticoagulantes.',
+      'Evitar en diarrea o digestión muy débil, puede resultar pesada para el estómago.',
+    ],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Tibia',
+      sabor: ['Dulce', 'Picante'],
+      meridianos: ['Hígado', 'Corazón', 'Bazo'],
+      funcion: 'Nutre y mueve la sangre, regula la menstruación, humedece los intestinos.',
+    },
+  },
+  {
+    id: 'goji',
+    name: 'Goji',
+    commonNames: ['Bayas de goji', 'Gou Qi Zi'],
+    scientificName: 'Lycium barbarum',
+    categories: ['tonificante'],
+    properties: ['Betacaroteno', 'Polisacáridos', 'Vitamina C', 'Antioxidantes'],
+    traditionalUses: [
+      'Tradicionalmente usadas para "nutrir el Yin" del hígado y del riñón, sobre todo cuando hay vista cansada o sequedad.',
+      'Usadas también, junto a otras hierbas, como tónico general de larga vida.',
+    ],
+    preparation: 'Un puñado (10-15 bayas) por taza. Infusionar 8-10 minutos, o simplemente masticar unas pocas al día.',
+    contraindications: [
+      'Puede interactuar con anticoagulantes como la warfarina: consultar antes si se toma esta medicación.',
+      'Moderar el consumo en digestión débil con diarrea.',
+    ],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Neutra',
+      sabor: ['Dulce'],
+      meridianos: ['Hígado', 'Riñón', 'Pulmón'],
+      funcion: 'Nutre el Yin y la sangre del hígado y el riñón, humedece el pulmón y mejora la vista.',
+    },
+  },
+  {
+    id: 'reishi',
+    name: 'Reishi',
+    commonNames: ['Ling Zhi'],
+    scientificName: 'Ganoderma lucidum',
+    categories: ['tonificante', 'relajante'],
+    properties: ['Polisacáridos (beta-glucanos)', 'Triterpenos'],
+    traditionalUses: [
+      'Conocido como "hongo de la inmortalidad" en la tradición china, usado para calmar el Shen (la mente/el espíritu) y favorecer un sueño reparador.',
+      'Usado como adaptógeno general, para sostener la energía en épocas de mucho desgaste.',
+    ],
+    preparation:
+      '1 cucharadita de hongo seco en láminas o polvo por taza. Hervir a fuego bajo 15-20 minutos. Sabor amargo, se puede combinar con miel o jengibre.',
+    contraindications: [
+      'Precaución con anticoagulantes o antiagregantes, y antes de una cirugía programada.',
+      'Puede bajar la presión arterial: precaución si ya se toma medicación para eso.',
+    ],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Neutra',
+      sabor: ['Dulce', 'Ligeramente amargo'],
+      meridianos: ['Corazón', 'Pulmón', 'Hígado', 'Riñón'],
+      funcion: 'Calma el Shen (la mente), tonifica el Qi del corazón y del pulmón, sostiene la vitalidad general.',
+    },
+  },
+  {
+    id: 'schisandra',
+    name: 'Schisandra',
+    commonNames: ['Wu Wei Zi', 'Fruto de las cinco sabores'],
+    scientificName: 'Schisandra chinensis',
+    categories: ['tonificante'],
+    properties: ['Lignanos', 'Ácidos orgánicos'],
+    traditionalUses: [
+      'Su nombre significa "fruto de los cinco sabores": reúne los cinco sabores de la MTC en una sola baya.',
+      'Usada tradicionalmente para la concentración, la energía sostenida y para proteger el hígado del desgaste diario.',
+    ],
+    preparation: '1 cucharadita de bayas secas machacadas por taza. Infusionar 8-10 minutos.',
+    contraindications: [
+      'No recomendada en embarazo.',
+      'Evitar en cuadros de mucho "calor" interno o acidez marcada.',
+    ],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Tibia',
+      sabor: ['Ácido', 'Dulce', 'Amargo', 'Picante', 'Salado'],
+      meridianos: ['Pulmón', 'Riñón', 'Corazón'],
+      funcion: 'Astringe y consolida el Qi del pulmón y del riñón, calma la mente, protege el hígado.',
+    },
+  },
+  {
+    id: 'crisantemo',
+    name: 'Crisantemo',
+    commonNames: ['Ju Hua'],
+    scientificName: 'Chrysanthemum morifolium',
+    categories: ['relajante'],
+    properties: ['Flavonoides', 'Aceites esenciales'],
+    traditionalUses: [
+      'Usado tradicionalmente para el calor y la tensión en la cabeza: ojos cansados o irritados, dolor de cabeza y mareo leve.',
+      'Muy popular como té refrescante después de comidas pesadas o en días de calor.',
+    ],
+    preparation: '4-5 flores secas por taza. Infusionar 5-8 minutos.',
+    contraindications: ['Evitar en digestión muy débil con diarrea o mucho frío corporal.'],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Ligeramente fría',
+      sabor: ['Dulce', 'Amargo'],
+      meridianos: ['Pulmón', 'Hígado'],
+      funcion: 'Dispersa el viento-calor, calma el hígado y aclara la vista, baja la tensión en la cabeza.',
+    },
+  },
+  {
+    id: 'azufaifo',
+    name: 'Azufaifo',
+    commonNames: ['Jujube', 'Da Zao'],
+    scientificName: 'Ziziphus jujuba',
+    categories: ['tonificante', 'relajante'],
+    properties: ['Azúcares naturales', 'Vitamina C', 'Polisacáridos'],
+    traditionalUses: [
+      'Fruto dulce usado tradicionalmente para tonificar el Qi del Bazo y nutrir la sangre.',
+      'Muy usado en combinaciones para calmar el espíritu (Shen) y suavizar el efecto de hierbas más fuertes o amargas.',
+    ],
+    preparation: '3-4 frutos partidos por taza. Hervir 10 minutos.',
+    contraindications: ['Moderar el consumo en caso de hinchazón abdominal marcada o diabetes, por su contenido de azúcares.'],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Tibia',
+      sabor: ['Dulce'],
+      meridianos: ['Bazo', 'Estómago', 'Corazón'],
+      funcion: 'Tonifica el Qi del centro, nutre la sangre y calma el Shen; suaviza combinaciones con hierbas fuertes.',
+    },
+  },
+  {
+    id: 'cordyceps',
+    name: 'Cordyceps',
+    commonNames: ['Dong Chong Xia Cao'],
+    scientificName: 'Cordyceps sinensis',
+    categories: ['tonificante', 'inmune'],
+    properties: ['Cordicepina', 'Polisacáridos'],
+    traditionalUses: [
+      'Hongo tradicional usado para sostener la energía física, la resistencia y la capacidad respiratoria.',
+      'Usado tradicionalmente para la recuperación después de un esfuerzo físico intenso o una enfermedad prolongada.',
+    ],
+    preparation: '1 cucharadita de hongo en polvo o trozos por taza. Hervir a fuego bajo 15 minutos.',
+    contraindications: [
+      'Precaución en enfermedades autoinmunes y junto a inmunosupresores, consultar antes con un médico.',
+      'Precaución con anticoagulantes.',
+    ],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Tibia',
+      sabor: ['Dulce'],
+      meridianos: ['Pulmón', 'Riñón'],
+      funcion: 'Tonifica el Qi del pulmón y la esencia (Jing) del riñón, sostiene la energía física y la respiración.',
+    },
+  },
+  {
+    id: 'he-shou-wu',
+    name: 'He Shou Wu',
+    commonNames: ['Fo-Ti'],
+    scientificName: 'Polygonum multiflorum (Reynoutria multiflora)',
+    categories: ['tonificante'],
+    properties: ['Antraquinonas', 'Compuestos fenólicos'],
+    traditionalUses: [
+      'Raíz tradicionalmente asociada a la longevidad, usada para nutrir la sangre y la "esencia" (Jing).',
+      'Popularmente ligada al cuidado del cabello (evitar canas prematuras) según la tradición china, junto con otros hábitos de vida.',
+    ],
+    preparation:
+      'Debe usarse siempre la forma procesada tradicional (Zhi He Shou Wu). 1 cucharadita por taza. Hervir 15-20 minutos.',
+    contraindications: [
+      'La forma sin procesar (cruda) puede ser tóxica para el hígado: usar únicamente la forma procesada y de fuente confiable.',
+      'No recomendado en embarazo ni en problemas hepáticos.',
+      'Suspender y consultar a un médico ante cualquier signo de malestar hepático (piel u ojos amarillos, orina oscura).',
+    ],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Ligeramente tibia',
+      sabor: ['Dulce', 'Amargo', 'Astringente'],
+      meridianos: ['Hígado', 'Riñón'],
+      funcion: 'Nutre la sangre y la esencia (Jing), fortalece el cabello, los huesos y los tendones.',
+    },
+  },
+  {
+    id: 'chai-hu',
+    name: 'Bupleurum',
+    commonNames: ['Chai Hu'],
+    scientificName: 'Bupleurum chinense',
+    categories: ['relajante', 'digestiva'],
+    properties: ['Saikosaponinas'],
+    traditionalUses: [
+      'Una de las hierbas centrales de la MTC para liberar el Qi del hígado cuando está "estancado" por el estrés o las emociones contenidas.',
+      'Tradicionalmente usada para la sensación de opresión en el pecho o las costillas, el humor irritable y los cambios de ánimo.',
+    ],
+    preparation: '1 cucharadita de raíz seca por taza. Hervir 10-15 minutos.',
+    contraindications: [
+      'No recomendado en embarazo.',
+      'Evitar en cuadros de mucho "calor" o presión arterial alta sin supervisión, ya que puede tener un efecto ascendente.',
+      'Consultar antes de combinar con corticoides, puede interactuar.',
+    ],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Fresca',
+      sabor: ['Amargo', 'Picante'],
+      meridianos: ['Hígado', 'Vesícula biliar'],
+      funcion: 'Libera el Qi estancado del hígado, eleva el Qi del centro y armoniza lo externo con lo interno.',
+    },
+  },
+  {
+    id: 'chen-pi',
+    name: 'Cáscara de mandarina',
+    commonNames: ['Chen Pi'],
+    scientificName: 'Citrus reticulata',
+    categories: ['digestiva'],
+    properties: ['Aceites esenciales cítricos', 'Flavonoides'],
+    traditionalUses: [
+      'Cáscara seca y añejada, muy usada en la MTC para "mover el Qi" y secar la humedad cuando hay pesadez digestiva.',
+      'Tradicionalmente usada para la sensación de hinchazón, la digestión lenta y la mucosidad abundante.',
+    ],
+    preparation: 'Cáscara seca de 1/2 mandarina (sin la parte blanca en exceso) por taza. Infusionar 8-10 minutos.',
+    contraindications: ['Usar cáscara de cultivo sin pesticidas, bien lavada antes de secar.'],
+    tradition: ['mtc'],
+    mtc: {
+      naturaleza: 'Tibia',
+      sabor: ['Picante', 'Amargo'],
+      meridianos: ['Bazo', 'Pulmón'],
+      funcion: 'Regula el Qi, seca la humedad y transforma la flema, fortalece la digestión.',
+    },
+  },
+  {
+    id: 'canela',
+    name: 'Canela',
+    commonNames: ['Ramita de canela', 'Gui Zhi'],
+    scientificName: 'Cinnamomum cassia',
+    categories: ['digestiva', 'estimulante'],
+    properties: ['Cinamaldehído', 'Aceites esenciales'],
+    traditionalUses: [
+      'Usada tanto en la tradición occidental como en la MTC para "entrar en calor": manos y pies fríos, circulación lenta.',
+      'Tradicionalmente usada para acompañar la digestión y dar un efecto reconfortante en días fríos.',
+    ],
+    preparation: '1 ramita (o 1/2 cucharadita en polvo) por taza. Hervir 8-10 minutos.',
+    contraindications: [
+      'No recomendada en dosis altas durante el embarazo.',
+      'Evitar en cuadros de mucho "calor" interno (sofocos, boca seca, cara roja) según la MTC.',
+      'Precaución en diabetes si se toma junto a medicación hipoglucemiante.',
+    ],
+    tradition: ['occidental', 'mtc'],
+    mtc: {
+      naturaleza: 'Tibia-caliente',
+      sabor: ['Dulce', 'Picante'],
+      meridianos: ['Corazón', 'Pulmón', 'Vejiga'],
+      funcion: 'Calienta y libera el exterior, armoniza la circulación del Qi y la sangre, calienta el Yang del centro.',
+    },
   },
 ];
 

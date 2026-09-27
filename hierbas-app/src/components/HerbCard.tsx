@@ -5,11 +5,19 @@ import { colors, categoryLabels } from '../theme/colors';
 import { Chip } from './Chip';
 
 export function HerbCard({ herb }: { herb: Herb }) {
+  const isMtc = herb.tradition.includes('mtc');
   return (
     <Link href={`/herb/${herb.id}`} asChild>
       <Pressable style={styles.card}>
         <View style={styles.headerRow}>
-          <Text style={styles.name}>{herb.name}</Text>
+          <View style={styles.titleRow}>
+            <Text style={styles.name}>{herb.name}</Text>
+            {isMtc && (
+              <View style={styles.mtcBadge}>
+                <Text style={styles.mtcBadgeText}>MTC</Text>
+              </View>
+            )}
+          </View>
           <Text style={styles.scientific}>{herb.scientificName}</Text>
         </View>
         <View style={styles.chipsRow}>
@@ -34,10 +42,26 @@ const styles = StyleSheet.create({
   headerRow: {
     marginBottom: 6,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   name: {
     fontSize: 17,
     fontWeight: '700',
     color: colors.text,
+  },
+  mtcBadge: {
+    backgroundColor: colors.secondary,
+    borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    marginLeft: 8,
+  },
+  mtcBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '800',
   },
   scientific: {
     fontSize: 12,

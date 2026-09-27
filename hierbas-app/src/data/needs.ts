@@ -308,6 +308,236 @@ export const needs: Need[] = [
       },
     ],
   },
+
+  // --- Patrones según la Medicina Tradicional China (MTC) ---
+  {
+    id: 'mtc-qi-bajo',
+    name: 'Cansancio profundo (Qi bajo)',
+    emoji: '🧘',
+    description:
+      'Según la MTC, cuando el Qi (la energía vital) está bajo aparece cansancio que no se va con dormir, poco apetito, voz débil y resfríos frecuentes.',
+    tradition: ['mtc'],
+    combos: [
+      {
+        id: 'tonico-de-qi',
+        name: 'Tónico de Qi',
+        ingredients: [
+          { herbId: 'ginseng', proportion: '1 parte' },
+          { herbId: 'astragalo', proportion: '1 parte' },
+          { herbId: 'azufaifo', proportion: '1 parte' },
+        ],
+        preparation: 'Hervir a fuego bajo, tapado, 15-20 minutos (decocción tradicional).',
+        frequency: '1 taza al día, en cursos de 2-3 semanas con una semana de descanso.',
+        notes: 'El ginseng no se recomienda junto a estimulantes en exceso ni en hipertensión no controlada.',
+      },
+      {
+        id: 'fuerza-diaria',
+        name: 'Fuerza diaria',
+        ingredients: [
+          { herbId: 'astragalo', proportion: '1 parte' },
+          { herbId: 'regaliz-chino', proportion: '1/2 parte' },
+          { herbId: 'jengibre', proportion: '1/2 parte' },
+        ],
+        preparation: 'Hervir 10-15 minutos.',
+        frequency: '1 taza al día, ideal en épocas de mucho desgaste físico o mental.',
+      },
+    ],
+  },
+  {
+    id: 'mtc-yin-bajo',
+    name: 'Sequedad y calor nocturno (Yin bajo)',
+    emoji: '🌙',
+    description:
+      'El Yin es lo que enfría y humedece el cuerpo. Cuando está bajo pueden aparecer sudores nocturnos, boca y garganta secas, inquietud al acostarse y sensación de calor por la tarde-noche.',
+    tradition: ['mtc'],
+    combos: [
+      {
+        id: 'nutrir-el-yin',
+        name: 'Nutrir el Yin',
+        ingredients: [
+          { herbId: 'goji', proportion: '1 parte' },
+          { herbId: 'crisantemo', proportion: '1/2 parte' },
+          { herbId: 'regaliz-chino', proportion: '1/4 parte' },
+        ],
+        preparation: 'Infusionar/hervir 8-10 minutos.',
+        frequency: '1 taza a la tarde y otra antes de dormir.',
+      },
+      {
+        id: 'frescura-nocturna',
+        name: 'Frescura nocturna',
+        ingredients: [
+          { herbId: 'goji', proportion: '1 parte' },
+          { herbId: 'he-shou-wu', proportion: '1/2 parte' },
+          { herbId: 'crisantemo', proportion: '1/2 parte' },
+        ],
+        preparation: 'Hervir 15 minutos.',
+        frequency: '1 taza al día, en cursos de 2-3 semanas.',
+        notes: 'Usar únicamente He Shou Wu procesado (Zhi He Shou Wu) de fuente confiable.',
+      },
+    ],
+  },
+  {
+    id: 'mtc-qi-higado-estancado',
+    name: 'Tensión emocional e irritabilidad (Qi del hígado estancado)',
+    emoji: '😤',
+    description:
+      'En la MTC, el estrés sostenido o las emociones contenidas "estancan" el Qi del hígado: aparece irritabilidad, opresión en el pecho o las costillas, suspiros frecuentes y cambios de humor.',
+    tradition: ['mtc'],
+    combos: [
+      {
+        id: 'libre-circular',
+        name: 'Libre circular',
+        ingredients: [
+          { herbId: 'chai-hu', proportion: '1 parte' },
+          { herbId: 'menta', proportion: '1/2 parte' },
+          { herbId: 'regaliz-chino', proportion: '1/4 parte' },
+        ],
+        preparation: 'Hervir el bupleurum 10 minutos, apagar y agregar la menta y el regaliz 3 minutos más.',
+        frequency: '1 taza al día, en los períodos de más tensión.',
+        notes: 'No recomendado en embarazo ni en hipertensión no controlada sin supervisión.',
+      },
+      {
+        id: 'aire-fresco-emocional',
+        name: 'Aire fresco',
+        ingredients: [
+          { herbId: 'crisantemo', proportion: '1 parte' },
+          { herbId: 'melisa', proportion: '1 parte' },
+          { herbId: 'regaliz-chino', proportion: '1/4 parte' },
+        ],
+        preparation: 'Infusionar 8 minutos.',
+        frequency: '1-2 tazas al día.',
+      },
+    ],
+  },
+  {
+    id: 'mtc-humedad-flema',
+    name: 'Pesadez y digestión lenta (humedad-flema)',
+    emoji: '🌫️',
+    description:
+      'Cuando el Bazo no transforma bien los líquidos, la MTC habla de acumulación de "humedad": hinchazón, pesadez, cabeza como algodón y mucosidad abundante.',
+    tradition: ['mtc'],
+    combos: [
+      {
+        id: 'seca-la-humedad',
+        name: 'Seca la humedad',
+        ingredients: [
+          { herbId: 'chen-pi', proportion: '1 parte' },
+          { herbId: 'jengibre', proportion: '1/2 parte' },
+          { herbId: 'regaliz-chino', proportion: '1/4 parte' },
+        ],
+        preparation: 'Hervir el jengibre 5 minutos, agregar la cáscara de mandarina y el regaliz, reposar 5 minutos más.',
+        frequency: '1 taza después de las comidas más pesadas.',
+      },
+      {
+        id: 'cabeza-liviana',
+        name: 'Cabeza liviana',
+        ingredients: [
+          { herbId: 'chen-pi', proportion: '1 parte' },
+          { herbId: 'menta', proportion: '1/2 parte' },
+        ],
+        preparation: 'Infusionar 8 minutos.',
+        frequency: '1 taza a media mañana.',
+      },
+    ],
+  },
+  {
+    id: 'mtc-yang-rinon-bajo',
+    name: 'Frío y baja energía vital (Yang del riñón bajo)',
+    emoji: '❄️',
+    description:
+      'El Yang del riñón es, según la MTC, el "fuego" que calienta todo el cuerpo. Cuando está bajo aparecen manos y pies fríos, lumbago, energía vital y sexual baja, y más sensibilidad al frío.',
+    tradition: ['mtc'],
+    combos: [
+      {
+        id: 'fuego-interior',
+        name: 'Fuego interior',
+        ingredients: [
+          { herbId: 'canela', proportion: '1 parte' },
+          { herbId: 'ginseng', proportion: '1/2 parte' },
+          { herbId: 'jengibre', proportion: '1/2 parte' },
+        ],
+        preparation: 'Hervir 10-15 minutos.',
+        frequency: '1 taza al día, preferentemente por la mañana, en épocas frías.',
+        notes: 'Evitar si hay signos de "calor" (sofocos, boca seca, cara roja) según la MTC.',
+      },
+      {
+        id: 'calor-de-fondo',
+        name: 'Calor de fondo',
+        ingredients: [
+          { herbId: 'astragalo', proportion: '1 parte' },
+          { herbId: 'canela', proportion: '1/2 parte' },
+          { herbId: 'azufaifo', proportion: '1 parte' },
+        ],
+        preparation: 'Hervir 12-15 minutos.',
+        frequency: '1 taza al día durante el invierno o en épocas de mucho cansancio.',
+      },
+    ],
+  },
+  {
+    id: 'mtc-defensas-wei-qi',
+    name: 'Fortalecer las defensas (Wei Qi)',
+    emoji: '🛡️',
+    description:
+      'El Wei Qi es, según la MTC, la capa de energía defensiva que protege la superficie del cuerpo. Fortalecerla ayuda a resfriarse con menos frecuencia.',
+    tradition: ['mtc'],
+    combos: [
+      {
+        id: 'escudo-wei-qi',
+        name: 'Escudo de Wei Qi',
+        ingredients: [
+          { herbId: 'astragalo', proportion: '1 parte' },
+          { herbId: 'jengibre', proportion: '1/2 parte' },
+          { herbId: 'regaliz-chino', proportion: '1/4 parte' },
+        ],
+        preparation: 'Hervir 10-15 minutos. Versión simplificada e inspirada en la fórmula clásica Yu Ping Feng San.',
+        frequency: '1 taza al día, en cursos de 2-3 semanas al empezar el otoño o el invierno.',
+        notes: 'No usar durante un resfrío con fiebre activa: en MTC el astrágalo se usa para prevenir, no en la fase aguda.',
+      },
+      {
+        id: 'oriente-occidente',
+        name: 'Oriente-Occidente',
+        ingredients: [
+          { herbId: 'astragalo', proportion: '1 parte' },
+          { herbId: 'equinacea', proportion: '1 parte' },
+          { herbId: 'jengibre', proportion: '1/2 parte' },
+        ],
+        preparation: 'Hervir el jengibre 5 minutos, agregar el astrágalo y la equinácea, reposar 8 minutos más.',
+        frequency: '1-2 tazas al día, en cursos cortos de 7-10 días.',
+      },
+    ],
+  },
+  {
+    id: 'mtc-shen',
+    name: 'Calmar la mente y el espíritu (Shen)',
+    emoji: '🕯️',
+    description:
+      'En la MTC, el Shen es la mente/el espíritu alojado en el Corazón. Cuando está agitado aparece insomnio con sueños intensos, palpitaciones leves por nervios y una sensación de "cabeza que no se apaga".',
+    tradition: ['mtc'],
+    combos: [
+      {
+        id: 'ancla-del-shen',
+        name: 'Ancla del Shen',
+        ingredients: [
+          { herbId: 'reishi', proportion: '1 parte' },
+          { herbId: 'azufaifo', proportion: '1 parte' },
+          { herbId: 'regaliz-chino', proportion: '1/4 parte' },
+        ],
+        preparation: 'Hervir a fuego bajo 15-20 minutos.',
+        frequency: '1 taza por la tarde y otra antes de dormir.',
+      },
+      {
+        id: 'quietud',
+        name: 'Quietud',
+        ingredients: [
+          { herbId: 'reishi', proportion: '1 parte' },
+          { herbId: 'goji', proportion: '1/2 parte' },
+          { herbId: 'crisantemo', proportion: '1/2 parte' },
+        ],
+        preparation: 'Hervir 15 minutos.',
+        frequency: '1 taza antes de dormir.',
+      },
+    ],
+  },
 ];
 
 export const getNeedById = (id: string): Need | undefined => needs.find((n) => n.id === id);

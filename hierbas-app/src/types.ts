@@ -6,7 +6,17 @@ export type Category =
   | 'antiinflamatoria'
   | 'depurativa'
   | 'estimulante'
-  | 'femenina';
+  | 'femenina'
+  | 'tonificante';
+
+export type Tradition = 'occidental' | 'mtc';
+
+export interface TcmInfo {
+  naturaleza: string;
+  sabor: string[];
+  meridianos: string[];
+  funcion: string;
+}
 
 export interface Herb {
   id: string;
@@ -18,6 +28,8 @@ export interface Herb {
   traditionalUses: string[];
   preparation: string;
   contraindications: string[];
+  tradition: Tradition[];
+  mtc?: TcmInfo;
 }
 
 export interface ComboIngredient {
@@ -40,4 +52,5 @@ export interface Need {
   emoji: string;
   description: string;
   combos: Combo[];
+  tradition?: Tradition[];
 }

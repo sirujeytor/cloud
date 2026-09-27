@@ -9,17 +9,22 @@ export default function AboutScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>🌿 Hierbas & Infusiones</Text>
         <Text style={styles.paragraph}>
-          Esta app junta el conocimiento tradicional sobre hierbas y plantas usadas en infusión,
+          Esta app junta el conocimiento tradicional sobre hierbas y plantas usadas en infusión —
+          tanto de la herboristería occidental/criolla como de la Medicina Tradicional China (MTC) —
           para que puedas elegir qué tomar según lo que necesitás: relajarte, ayudar a la digestión,
-          dormir mejor, cuidar las defensas o simplemente disfrutar un buen té.
+          dormir mejor, cuidar las defensas, equilibrar el Qi o simplemente disfrutar un buen té.
         </Text>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>¿Cómo se usa?</Text>
           <Text style={styles.paragraph}>
-            • En la pestaña &ldquo;Hierbas&rdquo; podés buscar una planta puntual y ver sus propiedades,
-            usos tradicionales, preparación y contraindicaciones.{'\n'}
+            • En la pestaña &ldquo;Hierbas&rdquo; podés buscar una planta puntual (occidental o de la MTC,
+            con filtro por tradición) y ver sus propiedades, usos tradicionales, preparación y
+            contraindicaciones.{'\n'}
             • En la pestaña &ldquo;Necesidades&rdquo; elegís lo que estás sintiendo (estrés, insomnio, digestión
-            pesada, etc.) y te sugerimos combinaciones de hierbas para preparar.
+            pesada, etc.) y te sugerimos combinaciones de hierbas para preparar.{'\n'}
+            • En la pestaña &ldquo;M. China&rdquo; encontrás los conceptos básicos de la MTC (Qi, Yin-Yang,
+            los 5 elementos, sabores y naturalezas), sus hierbas clásicas y los patrones/desequilibrios
+            más comunes con sus combinaciones.
           </Text>
         </View>
         <View style={styles.section}>

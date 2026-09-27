@@ -21,4 +21,10 @@ export const categoryLabels: Record<string, string> = {
   depurativa: 'Depurativa',
   estimulante: 'Estimulante',
   femenina: 'Ciclo femenino',
+  tonificante: 'Tonificante',
+};
+
+export const traditionLabels: Record<string, string> = {
+  occidental: 'Occidental',
+  mtc: 'Medicina china',
 };

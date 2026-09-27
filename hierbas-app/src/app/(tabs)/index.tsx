@@ -2,17 +2,19 @@ import { useMemo, useState } from 'react';
 import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { herbs } from '../../data/herbs';
-import { Category } from '../../types';
-import { colors, categoryLabels } from '../../theme/colors';
+import { Category, Tradition } from '../../types';
+import { colors, categoryLabels, traditionLabels } from '../../theme/colors';
 import { HerbCard } from '../../components/HerbCard';
 import { SearchBar } from '../../components/SearchBar';
 import { FilterChip } from '../../components/FilterChip';
 
 const allCategories = Object.keys(categoryLabels) as Category[];
+const allTraditions = Object.keys(traditionLabels) as Tradition[];
 
 export default function HerbsListScreen() {
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
+  const [activeTradition, setActiveTradition] = useState<Tradition | null>(null);
 
   const filteredHerbs = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -22,9 +24,10 @@ export default function HerbsListScreen() {
         herb.name.toLowerCase().includes(normalizedQuery) ||
         herb.commonNames.some((n) => n.toLowerCase().includes(normalizedQuery));
       const matchesCategory = !activeCategory || herb.categories.includes(activeCategory);
-      return matchesQuery && matchesCategory;
+      const matchesTradition = !activeTradition || herb.tradition.includes(activeTradition);
+      return matchesQuery && matchesCategory && matchesTradition;
     });
-  }, [query, activeCategory]);
+  }, [query, activeCategory, activeTradition]);
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -32,6 +35,21 @@ export default function HerbsListScreen() {
         <Text style={styles.title}>Hierbas y plantas</Text>
         <Text style={styles.subtitle}>Buscá una planta y descubrí sus propiedades y su preparación.</Text>
         <SearchBar value={query} onChangeText={setQuery} placeholder="Buscar por nombre..." />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersRow}>
+          <FilterChip
+            label="Todas las tradiciones"
+            active={activeTradition === null}
+            onPress={() => setActiveTradition(null)}
+          />
+          {allTraditions.map((tradition) => (
+            <FilterChip
+              key={tradition}
+              label={traditionLabels[tradition]}
+              active={activeTradition === tradition}
+              onPress={() => setActiveTradition((current) => (current === tradition ? null : tradition))}
+            />
+          ))}
+        </ScrollView>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersRow}>
           <FilterChip label="Todas" active={activeCategory === null} onPress={() => setActiveCategory(null)} />
           {allCategories.map((category) => (

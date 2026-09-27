@@ -45,6 +45,17 @@ export default function HerbDetailScreen() {
           ))}
         </Section>
 
+        {herb.mtc && (
+          <Section title="Según la Medicina Tradicional China (MTC)">
+            <View style={styles.mtcBox}>
+              <MtcRow label="Naturaleza" value={herb.mtc.naturaleza} />
+              <MtcRow label="Sabor" value={herb.mtc.sabor.join(', ')} />
+              <MtcRow label="Meridianos" value={herb.mtc.meridianos.join(', ')} />
+              <Text style={styles.mtcFuncion}>{herb.mtc.funcion}</Text>
+            </View>
+          </Section>
+        )}
+
         <Section title="Cómo preparar la infusión">
           <Text style={styles.text}>{herb.preparation}</Text>
         </Section>
@@ -68,6 +79,15 @@ function Section({ title, children }: { title: string; children: React.ReactNode
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
       {children}
+    </View>
+  );
+}
+
+function MtcRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.mtcRow}>
+      <Text style={styles.mtcLabel}>{label}</Text>
+      <Text style={styles.mtcValue}>{value}</Text>
     </View>
   );
 }
@@ -141,6 +161,33 @@ const styles = StyleSheet.create({
   },
   disclaimerWrap: {
     marginTop: 24,
+  },
+  mtcBox: {
+    backgroundColor: colors.chipBg,
+    borderRadius: 12,
+    padding: 12,
+  },
+  mtcRow: {
+    flexDirection: 'row',
+    marginBottom: 6,
+  },
+  mtcLabel: {
+    width: 100,
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.primaryDark,
+  },
+  mtcValue: {
+    flex: 1,
+    fontSize: 13,
+    color: colors.text,
+  },
+  mtcFuncion: {
+    fontSize: 13,
+    color: colors.text,
+    lineHeight: 19,
+    marginTop: 4,
+    fontStyle: 'italic',
   },
   notFound: {
     flex: 1,
